@@ -5,7 +5,7 @@ package project.pbo;
 
 public class App {
     public String getGreeting() {
-        return "Hello World!";
+        return "Hello World baru!";
     }
 
     public static void main(String[] args) {
