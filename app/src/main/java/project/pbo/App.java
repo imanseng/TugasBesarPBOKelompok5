@@ -35,7 +35,15 @@ public class App {
 
             User user = authService.login(username, password);
             if (user != null){
+                User userAktive;
                 System.out.println("[SUKSES] Login berhasil sebagai " + user.getRole());
+                if (user.getRole().equals("admin")){
+                    userAktive = new Admin(user.getUsername());
+                } else if (user.getRole().equals("staff")){
+                    userAktive = new Staff(user.getUsername());
+                } else {
+                    userAktive = new Owner(user.getUsername());
+                }
                 break;
             } else {
                 System.out.println("Login gagal! Input username dan password dengan benar!");
