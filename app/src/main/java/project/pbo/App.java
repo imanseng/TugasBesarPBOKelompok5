@@ -6,6 +6,9 @@ package project.pbo;
 import java.util.Scanner;
 
 import project.pbo.domain.User;
+import project.pbo.domain.Admin;
+import project.pbo.domain.Staff;
+import project.pbo.domain.Owner;
 import project.pbo.service.AuthService;
 
 public class App {
@@ -40,5 +43,6 @@ public class App {
                 percobaan++;
             }
         } while (percobaan <= 3);
+        input.close();
     }
 }
