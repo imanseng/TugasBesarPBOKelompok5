@@ -3,6 +3,11 @@
  */
 package project.pbo;
 
+import java.util.Scanner;
+
+import project.pbo.domain.User;
+import project.pbo.service.AuthService;
+
 public class App {
     public String getGreeting() {
         return "Hello World baru!";
@@ -10,5 +15,29 @@ public class App {
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
+
+        Scanner input = new Scanner(System.in);
+        AuthService authService = new AuthService();
+
+        String username;
+        String password;
+        int percobaan = 0;
+
+        do{
+            System.out.println("Username: > ");
+            username = input.nextLine();
+
+            System.out.println("Password: > ");
+            password = input.nextLine();
+
+            User user = authService.login(username, password);
+            if (user != null){
+                System.out.println("[SUKSES] Login berhasil sebagai " + user.getRole());
+                break;
+            } else {
+                System.out.println("Akun tidak terdaftar! Login gagal!");
+                percobaan++;
+            }
+        } while (percobaan <= 3);
     }
 }
