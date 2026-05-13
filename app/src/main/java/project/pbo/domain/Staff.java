@@ -7,18 +7,18 @@ public class Staff extends User{
     private String username;
 
     public String nama;
-    public String nik;
+    private String nik;
     public String noHp;
     private String ktp;
 
     public Staff (String username){
-        username = getUsername();
+        this.username = username;
         pilihanMenu = ' ';
     }
 
     Scanner input = new Scanner(System.in);
 
-    private void tampilkanMenu (){
+    private void tampilkanMenu (){ 
         do {
             System.out.println("Selamat Datang, " + username + "!\nSilahkan pilih menu:\n1. Daftar Pelanggan Baru\n2. Cari Data Pelanggan\n3. Cek Kendaraan Tersedia\n4. Proses Peminjaman (Sewa)\n5. Proses Pengembalian\n0. Logout");
             System.out.println("\nPilihan Anda > ");
@@ -34,10 +34,24 @@ public class Staff extends User{
     public void daftarPelangganBaru(){
         System.out.println("Nomor KTP: ");
         ktp = input.nextLine();
+        isValidKtp(ktp);
+        
         System.out.println("Nama Lengkap: ");
         nama = input.nextLine();
     }
     public void tampilkanInfo(){
         System.out.println("Nama: " + nama + "\nNIK: " + nik + "\nNo.HP: " + noHp);
+    }
+
+    private boolean isValidKtp (String ktp){
+        if (ktp.trim().isEmpty()){
+            System.out.println("Nomor KTP tidak boleh kosong!");
+            return false;
+        } 
+        if (!ktp.matches("\\d{16}")){
+            System.out.println("Nomor KTP harus diisi 16 Angka!");
+            return false;
+        }
+        return true;
     }
 }
