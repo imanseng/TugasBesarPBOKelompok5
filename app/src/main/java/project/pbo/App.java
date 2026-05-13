@@ -35,7 +35,8 @@ public class App {
                 System.out.println("[SUKSES] Login berhasil sebagai " + user.getRole());
                 break;
             } else {
-                System.out.println("Akun tidak terdaftar! Login gagal!");
+                System.out.println("Login gagal! Input username dan password dengan benar!");
+                System.out.println("Percobaan yang Anda miliki adalah: " + (3 - (percobaan + 1)));
                 percobaan++;
             }
         } while (percobaan <= 3);
