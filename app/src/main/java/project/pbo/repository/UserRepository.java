@@ -14,7 +14,15 @@ public class UserRepository {
 
     public List<User> findAll(){
         try (FileReader reader = new FileReader(FILE_PATH)){
-        Type lisType = new TypeToken<List<User>>(){}.getType();
+            Type listType = new TypeToken<List<User>>(){}.getType();
+            List <User> userAkunList = new Gson().fromJson(reader, listType);
+
+            if (userAkunList == null){
+                return new ArrayList<>();
+            }
+            return userAkunList;
+        } catch (Exception e){
+            return new ArrayList<>();
         }
     }
 }
