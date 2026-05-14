@@ -52,13 +52,16 @@ public class Admin extends Pengguna {
         Scanner input = new Scanner(System.in);
         int jenis = -1;
 
+        String platNomor;
+        double hargaSewa;
+
         // Input wajib Plat Nomor, Harga Sewa per Hari, dan Jenis Kendaraan (Mobil/Motor).
         do {
             System.out.println("=== TAMBAH KENDARAAN ===");
             System.out.println("\nMasukkan Plat Nomor Kendaraan: ");
-            String platNomor = input.nextLine();
+            platNomor = input.nextLine();
             System.out.println("Masukkan Harga Sewa per Hari: ");
-            double hargaSewa = input.nextDouble();
+            hargaSewa = input.nextDouble();
             System.out.println("Silahkan pilih jenis kendaraan:");
             System.out.println("1. Mobil");
             System.out.println("2. Motor");
@@ -70,5 +73,20 @@ public class Admin extends Pengguna {
             }
         } while (jenis < 0 || jenis > 2);
         input.close();
+
+        if (jenis == 0) {
+            System.out.println("Proses penambahan dibatalkan.");
+            return;
+        }
+
+        Kendaraan kendaraanBaru = null;
+
+        if (jenis == 1) {
+            // Instansiasi objek Mobil dengan nilai default pintu = 0 di awal
+            kendaraanBaru = new Mobil(platNomor, hargaSewa, "Mobil", 0);
+            // Mengisi jumlah pintu langsung via method milik Mobil
+            kendaraanBaru.inputSpesifik(input);
+            System.out.println("[DEBUG LOG] Objek mobil berhasil dibuat dengan aman.");
+        } 
     }
 }
