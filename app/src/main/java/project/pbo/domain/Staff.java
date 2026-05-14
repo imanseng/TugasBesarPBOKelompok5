@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 public class Staff extends Pengguna {
     private char pilihanMenu;
+    private String nomorKtp;
+    
     // IMAN - Perbaikan konstruktor
     public Staff(String username, String password, String role) {
         super(username, password, role);
@@ -30,7 +32,7 @@ public class Staff extends Pengguna {
 
             switch (pilihanMenu) {
                 case '1':
-                    
+                    daftarPelangganBaru();
                     break;
                 case '2':
                     System.out.println("Fitur cari data pelanggan."); // UBAH/HAPUS NANTI
@@ -55,7 +57,11 @@ public class Staff extends Pengguna {
 
         } while (pilihanMenu != '0');
     }
-    public void daftarPelangganBaru () {}
+    public void daftarPelangganBaru () {
+        System.out.println("=== MENU PENDAFTARAN PELANGGAN ===");
+        System.out.println("Masukkan Nomor KTP: ");
+
+    }
     public void cariDataPelanggan () {}
     public void cekKendaraanTersedia () {}
     public void prosesPeminjaman () {}
