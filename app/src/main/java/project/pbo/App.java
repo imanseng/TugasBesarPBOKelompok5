@@ -33,9 +33,9 @@ public class App {
             System.out.println("Password: > ");
             password = input.nextLine();
 
-            Pengguna user = authService.login(username, password);
-            if (user != null){
-                System.out.println("[SUKSES] Login berhasil sebagai " + user.getRole());
+            Pengguna pengguna = authService.login(username, password);
+            if (pengguna != null){
+                System.out.println("[SUKSES] Login berhasil sebagai " + pengguna.getRole());
                 break;
             } else {
                 System.out.println("Login gagal! Input username dan password dengan benar!");

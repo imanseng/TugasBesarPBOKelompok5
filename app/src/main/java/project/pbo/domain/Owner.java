@@ -4,19 +4,13 @@ import java.util.Scanner;
 
 public class Owner extends Pengguna {
     private char pilihanMenu;
-    private String username;
-    public Owner (String username){
-        username = getUsername();
-        pilihanMenu = ' ';
+    // IMAN - Perbaikan Konstruktor
+    public Owner(String username, String password, String role) {
+        super(username, password, role);
+        this.pilihanMenu = ' ';
     }
 
-    Scanner input = new Scanner(System.in);
-
-    private void tampilkanMenu (){
-        do {
-            System.out.println("Selamat Datang, " + username + "!\nSilahkan pilih menu:\n1. Lihat Laporan Pendapatan & Riwayat\n0. Logout");
-            System.out.println("\nPilihan Anda > ");
-            pilihanMenu = input.nextLine().charAt(0);
-        } while (pilihanMenu == '0');
-    }
+    // BELUM DI IMPLEMENT
+    public void prosesMenu() {}
+    public void riwayatTransaksi() {}
 }

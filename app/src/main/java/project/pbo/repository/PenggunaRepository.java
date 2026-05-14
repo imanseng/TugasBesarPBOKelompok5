@@ -9,7 +9,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserRepository {
+public class PenggunaRepository {
     private static final String FILE_PATH = "app/data/akun.json";
 
     public List<Pengguna> findAll(){
