@@ -12,6 +12,7 @@ public class Admin extends Pengguna {
     public Admin(String username, String password, String role) {
         super(username, password, role);
         this.pilihanMenu = ' ';
+        prosesMenu();
     }
 
     // IMAN - Menjalankan Menu
