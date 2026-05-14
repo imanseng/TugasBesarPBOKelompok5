@@ -5,7 +5,8 @@ import java.util.Scanner;
 public class Staff extends Pengguna {
     private char pilihanMenu;
     private String nomorKtp;
-    
+    public String namaLengkap;
+    private String noHp;
     // IMAN - Perbaikan konstruktor
     public Staff(String username, String password, String role) {
         super(username, password, role);
@@ -52,15 +53,24 @@ public class Staff extends Pengguna {
                 default:
                     System.out.println("Pilihan tidak valid!");
             }
-
-
-
         } while (pilihanMenu != '0');
     }
     public void daftarPelangganBaru () {
+        Scanner input = new Scanner(System.in);
         System.out.println("=== MENU PENDAFTARAN PELANGGAN ===");
         System.out.println("Masukkan Nomor KTP: ");
+        nomorKtp = input.nextLine();
+        validasiNomorKtp(nomorKtp);
+        System.out.println("Masukkan Nama Lengkap: ");
+        namaLengkap = input.nextLine();
+        System.out.println("Masukkan No Telepon: ");
+        noHp = input.nextLine();
+    }
 
+    public boolean validasiNomorKtp(String nomorKtp){
+        if (nomorKtp.trim().isEmpty()){
+            System.out.println("Nomor KT");
+        }
     }
     public void cariDataPelanggan () {}
     public void cekKendaraanTersedia () {}
