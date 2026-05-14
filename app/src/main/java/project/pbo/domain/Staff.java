@@ -1,5 +1,9 @@
 package project.pbo.domain;
 
+import project.pbo.repository.PelangganRepository;
+import project.pbo.domain.Pelanggan;
+
+import java.util.List;
 import java.util.Scanner;
 
 public class Staff extends Pengguna {
@@ -7,6 +11,9 @@ public class Staff extends Pengguna {
     private String nik;
     public String namaPelanggan;
     private String noTelp;
+
+    private PelangganRepository pelangganRepo = new PelangganRepository();
+
     // IMAN - Perbaikan konstruktor
     public Staff(String username, String password, String role) {
         super(username, password, role);
@@ -58,13 +65,22 @@ public class Staff extends Pengguna {
     public void daftarPelangganBaru () {
         Scanner input = new Scanner(System.in);
         System.out.println("=== MENU PENDAFTARAN PELANGGAN ===");
-        System.out.println("Masukkan Nomor KTP: ");
-        nik = input.nextLine();
-        validasiNomorKtp(nik);
+        while (true){
+            System.out.println("Masukkan Nomor KTP: ");
+            nik = input.nextLine();
+            if (!validasiNomorKtp(nik)){
+                continue;
+            }
+            if (validasiDataNomorKTP(nik)){
+                System.out.println("Pelanggan dengan KTP tersebut sudah terdaftar!");
+            }
+            break;
+        }
         System.out.println("Masukkan Nama Lengkap: ");
         namaPelanggan = input.nextLine();
         System.out.println("Masukkan No Telepon: ");
         noTelp = input.nextLine();
+
     }
 
     public boolean validasiNomorKtp(String nik){
@@ -78,6 +94,16 @@ public class Staff extends Pengguna {
         }
         return true;
     }
+    public boolean validasiDataNomorKTP(String nik){
+        List <Pelanggan> listPelanggan = pelangganRepo.loadAll();
+        for (Pelanggan list : listPelanggan){
+            if (list.getNik().equals(nik)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void cariDataPelanggan () {}
     public void cekKendaraanTersedia () {}
     public void prosesPeminjaman () {}
