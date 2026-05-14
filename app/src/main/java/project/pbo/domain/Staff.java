@@ -69,8 +69,14 @@ public class Staff extends Pengguna {
 
     public boolean validasiNomorKtp(String nomorKtp){
         if (nomorKtp.trim().isEmpty()){
-            System.out.println("Nomor KT");
+            System.out.println("Nomor KTP tidak boleh kosong!");
+            return false;
         }
+        if (!nomorKtp.matches("\\d{16}")){
+            System.out.println("Nomor KTP harus diisi 16 angka!");
+            return false;
+        }
+        return true;
     }
     public void cariDataPelanggan () {}
     public void cekKendaraanTersedia () {}
