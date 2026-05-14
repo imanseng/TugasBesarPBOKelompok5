@@ -4,9 +4,9 @@ import java.util.Scanner;
 
 public class Staff extends Pengguna {
     private char pilihanMenu;
-    private String nomorKtp;
-    public String namaLengkap;
-    private String noHp;
+    private String nik;
+    public String namaPelanggan;
+    private String noTelp;
     // IMAN - Perbaikan konstruktor
     public Staff(String username, String password, String role) {
         super(username, password, role);
@@ -59,20 +59,20 @@ public class Staff extends Pengguna {
         Scanner input = new Scanner(System.in);
         System.out.println("=== MENU PENDAFTARAN PELANGGAN ===");
         System.out.println("Masukkan Nomor KTP: ");
-        nomorKtp = input.nextLine();
-        validasiNomorKtp(nomorKtp);
+        nik = input.nextLine();
+        validasiNomorKtp(nik);
         System.out.println("Masukkan Nama Lengkap: ");
-        namaLengkap = input.nextLine();
+        namaPelanggan = input.nextLine();
         System.out.println("Masukkan No Telepon: ");
-        noHp = input.nextLine();
+        noTelp = input.nextLine();
     }
 
-    public boolean validasiNomorKtp(String nomorKtp){
-        if (nomorKtp.trim().isEmpty()){
+    public boolean validasiNomorKtp(String nik){
+        if (nik.trim().isEmpty()){
             System.out.println("Nomor KTP tidak boleh kosong!");
             return false;
         }
-        if (!nomorKtp.matches("\\d{16}")){
+        if (!nik.matches("\\d{16}")){
             System.out.println("Nomor KTP harus diisi 16 angka!");
             return false;
         }

@@ -1,12 +1,17 @@
 [
     {
-        "nomorKtp": "1234567890123456",
-        "namaLengkap": "Budi Santoso",
-        "noHp": "081234567890"
+        "nik": "1234567890123456",
+        "namaPelanggan": "Budi Santoso",
+        "noTelp": "081234567890"
     },
     {
-        "nomorKtp": "3201234567890001",
-        "namaLengkap": "Siti Aminah",
-        "noHp": "085712345678"
+        "nik": "3201234567890001",
+        "namaPelanggan": "Siti Aminah",
+        "noTelp": "085712345678"
+    },
+    {
+    "nik": "3171012345678901",
+    "namaPelanggan": "Andi Wijaya",
+    "noTelp": "089988776655"
     }
 ]
