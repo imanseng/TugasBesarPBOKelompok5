@@ -46,4 +46,29 @@ public class Admin extends Pengguna {
         } while (pilihanMenu != '0');
         input.close();
     }
+
+    // IMAN - Menambah Kendaraan (feat/add-vehicle)
+        public void tambahKendaraan() {
+        Scanner input = new Scanner(System.in);
+        int jenis = -1;
+
+        // Input wajib Plat Nomor, Harga Sewa per Hari, dan Jenis Kendaraan (Mobil/Motor).
+        do {
+            System.out.println("=== TAMBAH KENDARAAN ===");
+            System.out.println("\nMasukkan Plat Nomor Kendaraan: ");
+            String platNomor = input.nextLine();
+            System.out.println("Masukkan Harga Sewa per Hari: ");
+            double hargaSewa = input.nextDouble();
+            System.out.println("Silahkan pilih jenis kendaraan:");
+            System.out.println("1. Mobil");
+            System.out.println("2. Motor");
+            System.out.println("0. Batalkan proses");
+            System.out.print("\nPilihan Anda > ");
+            jenis = input.nextInt();
+            if (jenis < 0 || jenis > 2) {
+                System.out.println("Pilihan tidak valid!");
+            }
+        } while (jenis < 0 || jenis > 2);
+        input.close();
+    }
 }
