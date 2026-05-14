@@ -87,6 +87,12 @@ public class Admin extends Pengguna {
             // Mengisi jumlah pintu langsung via method milik Mobil
             kendaraanBaru.inputSpesifik(input);
             System.out.println("[DEBUG LOG] Objek mobil berhasil dibuat dengan aman.");
-        } 
+        } else if (jenis == 2) {
+            // Instansiasi objek Motor dengan nilai default transmisi = "" di awal
+            kendaraanBaru = new Motor(platNomor, hargaSewa, "Motor", "");
+            // Mengisi jenis transmisi langsung via method milik Motor
+            kendaraanBaru.inputSpesifik(input);
+            System.out.println("[DEBUG LOG] Objek motor berhasil dibuat dengan aman.");
+        }
     }
 }
