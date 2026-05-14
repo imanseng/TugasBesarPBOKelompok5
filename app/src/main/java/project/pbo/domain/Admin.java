@@ -2,7 +2,7 @@ package project.pbo.domain;
 
 import java.util.Scanner;
 
-public class Admin extends User {
+public class Admin extends Pengguna {
     private char pilihanMenu;
     private String username;
     public Admin (String username){

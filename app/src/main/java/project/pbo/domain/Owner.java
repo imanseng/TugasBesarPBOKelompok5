@@ -2,7 +2,7 @@ package project.pbo.domain;
 
 import java.util.Scanner;
 
-public class Owner extends User {
+public class Owner extends Pengguna {
     private char pilihanMenu;
     private String username;
     public Owner (String username){
