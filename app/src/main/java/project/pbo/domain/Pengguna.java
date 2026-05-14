@@ -1,6 +1,6 @@
 package project.pbo.domain;
 
-public class User {
+public class Pengguna {
     private String username;
     private String password;
     private String role;
