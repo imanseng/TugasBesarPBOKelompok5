@@ -16,7 +16,7 @@ public class Staff extends Pengguna {
 
     private PelangganRepository pelangganRepo = new PelangganRepository();
     private KendaraanRepository kendaraanRepo = new KendaraanRepository();
-    
+
     // IMAN - Perbaikan konstruktor
     public Staff(String username, String password, String role) {
         super(username, password, role);
@@ -49,7 +49,7 @@ public class Staff extends Pengguna {
                     System.out.println("Fitur cari data pelanggan."); // UBAH/HAPUS NANTI
                     break;
                 case '3':
-                    System.out.println("Fitur cek kendaraan."); // UBAH/HAPUS NANTI
+                    cekKendaraanTersedia(); 
                     break;
                 case '4':
                     System.out.println("Fitur peminjaman (sewa)."); // UBAH/HAPUS NANTI
