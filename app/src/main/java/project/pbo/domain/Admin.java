@@ -37,7 +37,7 @@ public class Admin extends Pengguna {
                     tambahKendaraan();
                     break;
                 case '2':
-                    System.out.println("Fitur lihat kendaraan (Monic/Robby)."); // UBAH/HAPUS NANTI
+                    lihatDaftarKendaraan();
                     break;
                 case '3':
                     System.out.println("Fitur hapus kendaraan (Monic/Robby)."); // UBAH/HAPUS NANTI
@@ -130,5 +130,52 @@ public class Admin extends Pengguna {
             repo.saveAll(listKendaraan);
             System.out.println("[SUKSES] Data kendaraan berhasil disimpan ke json. Status default: TERSEDIA.");
         }
+    }
+
+    // ROBBY - Menu Melihat Daftar Kendaraan (feat/list-vehicle)
+    public void lihatDaftarKendaraan(){
+
+        // List data kendaraan
+        List<Kendaraan> listKendaraan = repo.loadAll();
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("\n============================================================");
+        System.out.println("                   DAFTAR SELURUH KENDARAAN");
+        System.out.println("============================================================");
+
+        // Cek apakah data kosong
+        if (listKendaraan == null || listKendaraan.isEmpty()) {
+            System.out.println("Data kendaraan masih kosong.");
+        } else {
+            // Header tabel
+            System.out.println("| Plat Nomor | Jenis | Harga/Hari | Info Tambahan | Status        |");
+            System.out.println("--------------------------------------------------------------------------------");
+
+            // Isi tabel
+            for (Kendaraan k : listKendaraan) {
+                // Catatan: Output Merek belum ditambahkan karena kendaraan belum memiliki atribut merek
+                String platNomor = k.getPlatNomor();
+                String jenis = k.getJenisKendaraan();
+                String harga = "Rp " + String.format("%,.0f", k.getHargaSewaPerHari());
+                String status = k.getStatus();
+                String infoTambahan = "-";
+
+                // Cek tipe kendaraan untuk info tambahan
+                if (k instanceof Mobil) {
+                    Mobil mobil = (Mobil) k;
+                    infoTambahan = mobil.getJumlahPintu() + " pintu"; // Menampilkan jumlah pintu mobil
+                    // Catatan: pada UI yang diharapkan terdapat info tambahan berupa transmisi, namun mobil tidak memiliki atribut transmisi
+                } else if (k instanceof Motor) {
+                    Motor motor = (Motor) k;
+                    infoTambahan = motor.getJenisTransmisi(); // Menampilkan jenis transmisi motor
+                }
+
+                // Format baris tabel
+                System.out.printf("| %-10s | %-5s | %-10s | %-13s | %-13s |%n", 
+                                    platNomor, jenis, harga, infoTambahan, status);
+            }
+        }
+        System.out.println("\nTekan ENTER untuk kembali ke menu utama...");
+        input.nextLine(); 
     }
 }
