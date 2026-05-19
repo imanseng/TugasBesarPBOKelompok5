@@ -1,0 +1,16 @@
+[
+  {
+    "platNomor": "B 1234 ABC",
+    "hargaSewaPerHari": 300000,
+    "jenisKendaraan": "Mobil",
+    "status": "TERSEDIA",
+    "jumlahPintu": 4
+  },
+  {
+    "platNomor": "D 5678 DEF",
+    "hargaSewaPerHari": 100000,
+    "jenisKendaraan": "Motor",
+    "status": "SEDANG DISEWA",
+    "jenisTransmisi": "Matic"
+  }
+]
