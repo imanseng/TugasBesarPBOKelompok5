@@ -2,6 +2,7 @@ package project.pbo.domain;
 
 import project.pbo.repository.KendaraanRepository;
 import project.pbo.repository.PelangganRepository;
+import project.pbo.repository.TransaksiRepository;
 import project.pbo.domain.Pelanggan;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class Staff extends Pengguna {
 
     private PelangganRepository pelangganRepo = new PelangganRepository();
     private KendaraanRepository kendaraanRepo = new KendaraanRepository();
+    private TransaksiRepository transaksiRepo = new TransaksiRepository();
 
     // IMAN - Perbaikan konstruktor
     public Staff(String username, String password, String role) {
@@ -46,13 +48,13 @@ public class Staff extends Pengguna {
                     daftarPelangganBaru();
                     break;
                 case '2':
-                   cariDataPelanggan();
+                    cariDataPelanggan();
                     break;
                 case '3':
-                    cekKendaraanTersedia(); 
+                    cekKendaraanTersedia();
                     break;
                 case '4':
-                    System.out.println("Fitur peminjaman (sewa)."); // UBAH/HAPUS NANTI
+                    prosesPeminjaman();
                     break;
                 case '5':
                     System.out.println("Fitur pengembalian."); // UBAH/HAPUS NANTI
@@ -65,16 +67,17 @@ public class Staff extends Pengguna {
             }
         } while (pilihanMenu != '0');
     }
-    public void daftarPelangganBaru () {
+
+    public void daftarPelangganBaru() {
         Scanner input = new Scanner(System.in);
         System.out.println("=== MENU PENDAFTARAN PELANGGAN ===");
-        while (true){
+        while (true) {
             System.out.println("Masukkan Nomor KTP: ");
             nik = input.nextLine();
-            if (!validasiNomorKtp(nik)){
+            if (!validasiNomorKtp(nik)) {
                 continue;
             }
-            if (validasiDataNomorKTP(nik)){
+            if (validasiDataNomorKTP(nik)) {
                 System.out.println("Pelanggan dengan KTP tersebut sudah terdaftar!");
             }
             break;
@@ -86,29 +89,30 @@ public class Staff extends Pengguna {
 
     }
 
-    public boolean validasiNomorKtp(String nik){
-        if (nik.trim().isEmpty()){
+    public boolean validasiNomorKtp(String nik) {
+        if (nik.trim().isEmpty()) {
             System.out.println("Nomor KTP tidak boleh kosong!");
             return false;
         }
-        if (!nik.matches("\\d{16}")){
+        if (!nik.matches("\\d{16}")) {
             System.out.println("Nomor KTP harus diisi 16 angka!");
             return false;
         }
         return true;
     }
-    public boolean validasiDataNomorKTP(String nik){
-        List <Pelanggan> listPelanggan = pelangganRepo.loadAll();
-        for (Pelanggan list : listPelanggan){
-            if (list.getNik().equals(nik)){
+
+    public boolean validasiDataNomorKTP(String nik) {
+        List<Pelanggan> listPelanggan = pelangganRepo.loadAll();
+        for (Pelanggan list : listPelanggan) {
+            if (list.getNik().equals(nik)) {
                 return true;
             }
         }
         return false;
     }
-    
-    //task Fatin - cari data pelanggan 
-    public void cariDataPelanggan () {
+
+    // task Fatin - cari data pelanggan
+    public void cariDataPelanggan() {
         Scanner input = new Scanner(System.in);
         System.out.println("=== MENU PENCARIAN PELANGGAN ===");
         System.out.println("================================");
@@ -117,17 +121,17 @@ public class Staff extends Pengguna {
         System.out.println("Masukkan Nomor KTP Pelanggan: ");
 
         String nikCari = input.nextLine();
-        if (nikCari.equals("0")){
-            return; //kembali ke menu utama
+        if (nikCari.equals("0")) {
+            return; // kembali ke menu utama
         }
 
         List<Pelanggan> listPelanggan = pelangganRepo.loadAll();
-        Pelanggan pelangganDiTemukan = null; //jika pelanggan belum ditemukan
+        Pelanggan pelangganDiTemukan = null; // jika pelanggan belum ditemukan
 
-        for (Pelanggan pelanggan : listPelanggan){
-            if(pelanggan.getNik().equals(nikCari)){
+        for (Pelanggan pelanggan : listPelanggan) {
+            if (pelanggan.getNik().equals(nikCari)) {
                 pelangganDiTemukan = pelanggan;
-                break; //keluar dari loop jika sudah ditemukan
+                break; // keluar dari loop jika sudah ditemukan
             }
         }
 
@@ -135,8 +139,8 @@ public class Staff extends Pengguna {
             System.out.println("================================");
             System.out.println("DATA PELANGGAN DITEMUKAN!");
             System.out.println("================================");
-            pelangganDiTemukan.tampilkanInfo();//tampilkan data pelanggan yang ditemukan
-            
+            pelangganDiTemukan.tampilkanInfo();// tampilkan data pelanggan yang ditemukan
+
         } else {
             System.out.println("================================");
             System.out.println("MAAF DATA PELANGGAN TIDAK DITEMUKAN!");
@@ -148,42 +152,166 @@ public class Staff extends Pengguna {
 
     }
 
-    //Task Fatin - Cek Kendaraan Tersedia
-    public void cekKendaraanTersedia () { //tugas Fatin
+    // Task Fatin - Cek Kendaraan Tersedia
+    public void cekKendaraanTersedia() { // tugas Fatin
         Scanner input = new Scanner(System.in);
 
-        //mengambil semua data yang ada di kendaraan.json
+        // mengambil semua data yang ada di kendaraan.json
         List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
         System.out.println("=== DAFTAR KENDARAAN YANG TERSEDIA ===");
-        //membuat list baru, untuk kendaraan yang statusnya tersedia
+        // membuat list baru, untuk kendaraan yang statusnya tersedia
         List<Kendaraan> listKendaraanTersedia = new ArrayList<>();
 
-        //loop kendaraan, untuk memfilter yang statusnya tersedia saja
-        for (Kendaraan kendaraan : listKendaraan){
-            if (kendaraan.getStatus().equalsIgnoreCase("Tersedia")){
-                listKendaraanTersedia.add(kendaraan); //masukkan ke list yang tersedia 
-                //untuk yang sedang disewa akan otomatis dilewati alias tak masuk ke dalam list
+        // loop kendaraan, untuk memfilter yang statusnya tersedia saja
+        for (Kendaraan kendaraan : listKendaraan) {
+            if (kendaraan.getStatus().equalsIgnoreCase("Tersedia")) {
+                listKendaraanTersedia.add(kendaraan); // masukkan ke list yang tersedia
+                // untuk yang sedang disewa akan otomatis dilewati alias tak masuk ke dalam list
             }
-        } 
+        }
 
-        //cek apakah ada kendaraan yang tersedia
-        if(listKendaraanTersedia.isEmpty()){
+        // cek apakah ada kendaraan yang tersedia
+        if (listKendaraanTersedia.isEmpty()) {
             System.out.println("Tidak ada kendaraan yang tersedia saat ini.");
         } else {
-            for (Kendaraan kendaraan : listKendaraanTersedia){
-            System.out.println("======================================");
-            //tampilaka kendaraan yang tersedia 
-            System.out.println("Plat Nomor      :" + kendaraan.getPlatNomor());
-            System.out.println("Jenis           :" + kendaraan.getJenisKendaraan());
-            System.out.println("Harga sewa/hari :" + kendaraan.getHargaSewaPerHari());
-            System.out.println("Status          :" + kendaraan.getStatus());
-            System.out.println("======================================");
+            for (Kendaraan kendaraan : listKendaraanTersedia) {
+                System.out.println("======================================");
+                // tampilaka kendaraan yang tersedia
+                System.out.println("Plat Nomor      :" + kendaraan.getPlatNomor());
+                System.out.println("Jenis           :" + kendaraan.getJenisKendaraan());
+                System.out.println("Harga sewa/hari :" + kendaraan.getHargaSewaPerHari());
+                System.out.println("Status          :" + kendaraan.getStatus());
+                System.out.println("======================================");
             }
         }
         System.out.println("Tekan Enter untuk Kembali ke Menu");
         input.nextLine();
     }
 
-    public void prosesPeminjaman () {}
-    public void prosesPengembalian () {}
+    public void prosesPeminjaman() {
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("=== MENU PEMINJAMAN KENDARAAN ===");
+        System.out.println("================================");
+        System.out.println("= Ketik 0 untuk Kembali ke Menu =");
+        System.out.println("================================");
+
+        // Input nomor KTP
+        System.out.println("Masukkan Nomor KTP Pelanggan: ");
+        String nikInput = input.nextLine().trim(); // menghilangkan spasi di awal dan akhir untuk mencegah kesalahan
+                                                   // input
+
+        if (nikInput.equals("0")) {
+            return; // kembali ke menu
+        }
+
+        // Validasi KTP terdaftar
+        List<Pelanggan> listPelanggan = pelangganRepo.loadAll();
+        Pelanggan pelangganDitemukan = null;
+
+        for (Pelanggan pelanggan : listPelanggan) {
+            if (pelanggan.getNik().equals(nikInput)) {
+                pelangganDitemukan = pelanggan;
+                break;
+            }
+        }
+
+        if (pelangganDitemukan == null) {
+            System.out.println("[GAGAL] Nomor KTP tidak terdaftar!");
+            System.out.println("Tekan Enter untuk Kembali ke Menu");
+            input.nextLine();
+            return;
+        }
+
+        // Input plat nomor
+        System.out.println("Masukkan Plat Nomor Kendaraan: ");
+        String platNomorInput = input.nextLine().trim().toUpperCase();
+
+        if (platNomorInput.equals("0")) {
+            return; // kembali ke menu
+        }
+
+        // Validasi kendaraan tersedia
+        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
+        Kendaraan kendaraanDitemukan = null;
+
+        for (int i = 0; i < listKendaraan.size(); i++) {
+            Kendaraan k = listKendaraan.get(i);
+            if (k.getPlatNomor().equalsIgnoreCase(platNomorInput)) {
+                if (k.getStatus().equalsIgnoreCase("TERSEDIA")) {
+                    kendaraanDitemukan = k;
+                } else {
+                    System.out.println("[GAGAL] Kendaraan sedang disewa!");
+                    return;
+                }
+                break;
+            }
+        }
+
+        if (kendaraanDitemukan == null) {
+            System.out.println("[GAGAL] Plat Nomor Kendaraan tidak terdaftar!");
+            System.out.println("Tekan Enter untuk Kembali ke Menu");
+            input.nextLine();
+            return;
+        }
+
+        // Input durasi sewa
+        System.out.println("Masukkan Durasi Sewa (dalam hari): ");
+        int durasi = input.nextInt();
+        input.nextLine();
+
+        if (durasi <= 0) {
+            System.out.println("[GAGAL] Durasi sewa tidak valid!");
+            System.out.println("Tekan Enter untuk Kembali ke Menu");
+            input.nextLine();
+            return;
+        }
+
+        // Hitung total bayar
+        double totalBayar = durasi * kendaraanDitemukan.getHargaSewaPerHari();
+
+        // Generate ID Transaksi
+        List<Transaksi> listTransaksi = transaksiRepo.findAll();
+        String idTransaksi = generateIdTransaksi(listTransaksi);
+
+        // Buat objek transaksi
+        Transaksi transaksiBaru = new Transaksi(idTransaksi, nikInput, platNomorInput, durasi, totalBayar, "AKTIF");
+
+        // Update status
+        kendaraanDitemukan.setStatus("SEDANG DISEWA");
+
+        // Simpan ke JSON
+        transaksiRepo.tambah(transaksiBaru);
+        kendaraanRepo.saveAll(listKendaraan);
+
+        // Tampilkan struk
+        System.out.println("\nMemproses transaksi...");
+        transaksiBaru.tampilkanStruk(pelangganDitemukan.getNamaPelanggan(), kendaraanDitemukan.getJenisKendaraan());
+
+        System.out.println("Tekan Enter untuk Kembali ke Menu");
+        input.nextLine();
+    }
+
+    // Generator ID transaksi unik
+    private String generateIdTransaksi(List<Transaksi> listTransaksi) {
+        int maxNum = 0;
+
+        for (Transaksi t : listTransaksi) {
+            if (t.getIdTransaksi() != null && t.getIdTransaksi().startsWith("TRX-")) {
+                try {
+                    String numberStr = t.getIdTransaksi().substring(4); // Mengambil angka setelah "TRX-"
+                    int number = Integer.parseInt(numberStr);
+                    if (number > maxNum) {
+                        maxNum = number;
+                    }
+                } catch (NumberFormatException e) {
+                    // Skip jika format ID transaksi tidak valid
+                }
+            }
+        }
+        return String.format("TRX-%03d", maxNum + 1);
+    }
+
+    public void prosesPengembalian() {
+    }
 }
