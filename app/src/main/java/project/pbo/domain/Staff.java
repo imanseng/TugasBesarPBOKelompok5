@@ -46,7 +46,7 @@ public class Staff extends Pengguna {
                     daftarPelangganBaru();
                     break;
                 case '2':
-                    System.out.println("Fitur cari data pelanggan."); // UBAH/HAPUS NANTI
+                   cariDataPelanggan();
                     break;
                 case '3':
                     cekKendaraanTersedia(); 
@@ -106,8 +106,47 @@ public class Staff extends Pengguna {
         }
         return false;
     }
-     
-    public void cariDataPelanggan () {}
+    
+    //task Fatin - cari data pelanggan 
+    public void cariDataPelanggan () {
+        Scanner input = new Scanner(System.in);
+        System.out.println("=== MENU PENCARIAN PELANGGAN ===");
+        System.out.println("================================");
+        System.out.println("= Ketik 0 untuk Kembali ke Menu =");
+        System.out.println("================================");
+        System.out.println("Masukkan Nomor KTP Pelanggan: ");
+
+        String nikCari = input.nextLine();
+        if (nikCari.equals("0")){
+            return; //kembali ke menu utama
+        }
+
+        List<Pelanggan> listPelanggan = pelangganRepo.loadAll();
+        Pelanggan pelangganDiTemukan = null; //jika pelanggan belum ditemukan
+
+        for (Pelanggan pelanggan : listPelanggan){
+            if(pelanggan.getNik().equals(nikCari)){
+                pelangganDiTemukan = pelanggan;
+                break; //keluar dari loop jika sudah ditemukan
+            }
+        }
+
+        if (pelangganDiTemukan != null) {
+            System.out.println("================================");
+            System.out.println("DATA PELANGGAN DITEMUKAN!");
+            System.out.println("================================");
+            pelangganDiTemukan.tampilkanInfo();//tampilkan data pelanggan yang ditemukan
+            
+        } else {
+            System.out.println("================================");
+            System.out.println("MAAF DATA PELANGGAN TIDAK DITEMUKAN!");
+            System.out.println("================================");
+        }
+
+        System.out.println("Tekan Enter untuk Kembali ke Menu");
+        input.nextLine();
+
+    }
 
     //Task Fatin - Cek Kendaraan Tersedia
     public void cekKendaraanTersedia () { //tugas Fatin
