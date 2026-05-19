@@ -64,19 +64,25 @@ public class Main {
         }
     }
 
-    // Switch-case routing ke menu sesuai role
+     // Switch-case routing ke menu sesuai role - FIXED BY IMAN
     private static void arahkanKeMenu(Pengguna pengguna) {
         String role = pengguna.getRole().toLowerCase();
 
         switch (role) {
             case "admin":
-                new Admin(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
+                // Instansiasi dan langsung panggil prosesMenu() milik Iman
+                Admin admin = new Admin(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
+                admin.prosesMenu(); 
                 break;
             case "staff":
-                new Staff(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
+                // Instansiasi dan panggil prosesMenu() milik Staff
+                Staff staff = new Staff(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
+                staff.prosesMenu();
                 break;
             case "owner":
-                new Owner(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
+                // Instansiasi dan panggil prosesMenu() milik Owner
+                Owner owner = new Owner(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
+                owner.prosesMenu();
                 break;
             default:
                 System.out.println("[ERROR] Role tidak dikenali: " + pengguna.getRole());
