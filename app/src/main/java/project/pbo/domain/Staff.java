@@ -267,6 +267,28 @@ public class Staff extends Pengguna {
             return;
         }
 
+         // IMAN - IMPLEMENTASI AC 1 (Opsi Pengantaran)
+        boolean isDelivery = false;
+        String zonaKirim = "-";
+        double biayaKirim = 0;
+
+        while (true) {
+            System.out.println("\nPilih Opsi Layanan Pengambilan Kendaraan:");
+            System.out.println("1. Ambil di Kantor (Gratis)");
+            System.out.println("2. Antar ke Lokasi Pelanggan (Ada Biaya Tambahan Zona)");
+            System.out.print("Pilihan Layanan > ");
+            String opsi = input.nextLine().trim();
+
+            if (opsi.equals("1")) {
+                break; // Keluar dari perulangan, peminjaman normal di kantor
+            } else if (opsi.equals("2")) {
+                isDelivery = true;
+                break;
+            }
+            System.out.println("[PERINGATAN] Pilihan tidak valid! Masukkan angka 1 atau 2.");
+        }
+
+
         // Hitung total bayar
         double totalBayar = durasi * kendaraanDitemukan.getHargaSewaPerHari();
 
