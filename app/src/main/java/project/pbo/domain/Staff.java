@@ -288,6 +288,29 @@ public class Staff extends Pengguna {
             System.out.println("[PERINGATAN] Pilihan tidak valid! Masukkan angka 1 atau 2.");
         }
 
+        // IMAN - IMPLEMENTASI AC 2 & AC 3 (Pilihan Zona & Biaya Otomatis)
+        if (isDelivery) {
+            while (true) {
+                System.out.println("\nPilih Zona Pengantaran Kendaraan:");
+                System.out.println("A. Zona A (Biaya Tambahan: Rp 150.000)");
+                System.out.println("B. Zona B (Biaya Tambahan: Rp 100.000)");
+                System.out.println("C. Zona C (Biaya Tambahan: Rp  50.000)");
+                System.out.print("Pilih Zona (A/B/C) > ");
+                zonaKirim = input.nextLine().trim().toUpperCase();
+
+                if (zonaKirim.equals("A")) {
+                    biayaKirim = 150000;
+                    break;
+                } else if (zonaKirim.equals("B")) {
+                    biayaKirim = 100000;
+                    break;
+                } else if (zonaKirim.equals("C")) {
+                    biayaKirim = 50000;
+                    break;
+                }
+                System.out.println("[PERINGATAN] Zona tidak valid! Harap pilih antara A, B, atau C.");
+            }
+        }
 
         // Hitung total bayar
         double totalBayar = durasi * kendaraanDitemukan.getHargaSewaPerHari();
