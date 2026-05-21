@@ -1,13 +1,12 @@
 package project.pbo.domain;
 
-import project.pbo.repository.KendaraanRepository;
-import project.pbo.repository.PelangganRepository;
-import project.pbo.repository.TransaksiRepository;
-import project.pbo.domain.Pelanggan;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import project.pbo.repository.KendaraanRepository;
+import project.pbo.repository.PelangganRepository;
+import project.pbo.repository.TransaksiRepository;
 
 public class Staff extends Pengguna {
     private char pilihanMenu;
@@ -312,15 +311,17 @@ public class Staff extends Pengguna {
             }
         }
 
-        // Hitung total bayar
-        double totalBayar = durasi * kendaraanDitemukan.getHargaSewaPerHari();
+        // IMAN - Perbaikan Rumus Akumulasi Biaya Kirim (AC 4)
+        double totalBayar = (durasi * kendaraanDitemukan.getHargaSewaPerHari()) + biayaKirim;
 
         // Generate ID Transaksi
         List<Transaksi> listTransaksi = transaksiRepo.findAll();
         String idTransaksi = generateIdTransaksi(listTransaksi);
 
         // Buat objek transaksi
-        Transaksi transaksiBaru = new Transaksi(idTransaksi, nikInput, platNomorInput, durasi, totalBayar, "AKTIF");
+        // IMAN - Integrasi variabel kelompok 5 ke dalam konstruktor Transaksi (AC 4)
+        Transaksi transaksiBaru = new Transaksi(idTransaksi, nikInput, platNomorInput, durasi, totalBayar, "AKTIF", isDelivery, zonaKirim);
+
 
         // Update status
         kendaraanDitemukan.setStatus("SEDANG DISEWA");
