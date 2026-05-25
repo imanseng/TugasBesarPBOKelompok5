@@ -1,21 +1,26 @@
 package project.pbo.repository;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import project.pbo.domain.Kendaraan;
-import project.pbo.domain.Mobil;
-import project.pbo.domain.Motor;
-
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonSerializer;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
+
+import project.pbo.domain.Kendaraan;
+import project.pbo.domain.Mobil;
+import project.pbo.domain.Motor;
 
 public class KendaraanRepository {
     private static final String FILE_PATH = "app/data/kendaraan.json";
@@ -25,24 +30,30 @@ public class KendaraanRepository {
         // Custom Serializer & Deserializer untuk menangani Polimorfisme Mobil/Motor di JSON
         JsonSerializer<Kendaraan> serializer = (src, typeOfSrc, context) -> {
             JsonObject jsonObj = context.serialize(src).getAsJsonObject();
-            jsonObj.addProperty("type", src.getClass().getSimpleName()); // Menandai tipe "Mobil" atau "Motor"
+            jsonObj.addProperty("jenisKendaraan", src.getClass().getSimpleName()); // Menandai tipe "Mobil" atau "Motor"
             return jsonObj;
         };
 
         JsonDeserializer<Kendaraan> deserializer = (json, typeOfT, context) -> {
             JsonObject jsonObj = json.getAsJsonObject();
-            String type = jsonObj.get("type").getAsString();
-            try {
-                if ("Mobil".equals(type)) {
-                    return context.deserialize(json, Mobil.class);
-                } else if ("Motor".equals(type)) {
-                    return context.deserialize(json, Motor.class);
-                }
-            } catch (Exception e) {
-                throw new JsonParseException("Gagal parsing tipe kendaraan: " + type);
-            }
-            return null;
-        };
+
+        String type;
+        if (jsonObj.has("type") && !jsonObj.get("type").isJsonNull()) {
+            type = jsonObj.get("type").getAsString();
+        } else if (jsonObj.has("jenisKendaraan") && !jsonObj.get("jenisKendaraan").isJsonNull()) {
+            type = jsonObj.get("jenisKendaraan").getAsString();
+        } else {
+            throw new JsonParseException("Data kendaraan tidak memiliki type atau jenisKendaraan.");
+        }
+
+        if ("Mobil".equalsIgnoreCase(type)) {
+            return context.deserialize(json, Mobil.class);
+        } else if ("Motor".equalsIgnoreCase(type)) {
+            return context.deserialize(json, Motor.class);
+        }
+
+        throw new JsonParseException("Tipe kendaraan tidak dikenali: " + type);
+    };
 
         // Build Gson dengan format cetak rapi (Pretty Printing)
         this.gson = new GsonBuilder()
