@@ -437,7 +437,31 @@ public class Staff extends Pengguna {
     //Adit - (Polymorphism) Denda Mobil dikenakan denda Rp50.000/hari, sedangkan Motor dikenakan denda Rp20.000/hari.
     double denda = kendaraanDitemukan.hitungDenda(hariTerlambat);//Motor.java & Mobil.java method hitungDenda disesuaikan dengan aturan di atas
     double totalBayar = biayaDasar + denda;
-    
+
+    //Adit - Sistem mengubah status kendaraan kembali menjadi "Tersedia".
+    transaksiDitemukan.setTotalBayar(totalBayar);
+    transaksiDitemukan.setStatus("SELESAI");//ubah juga transaksi status jadi SELESAI
+    kendaraanDitemukan.setStatus("Tersedia");
+
+    //Save ulang perubahan hasil pengembalian ke repo transaksi dan kendaraan (json)
+    transaksiRepo.saveAll(listTransaksi);
+    kendaraanRepo.saveAll(listKendaraan);
+
+    //Adit - Sistem menampilkan struk tagihan akhir (Biaya Dasar + Denda Keterlambatan).
+    System.out.println("\n=== STRUK TAGIHAN AKHIR ===");
+    System.out.println("ID Transaksi       : " + transaksiDitemukan.getIdTransaksi());
+    System.out.println("Plat Nomor         : " + transaksiDitemukan.getPlatNomor());
+    System.out.println("Jenis Kendaraan    : " + kendaraanDitemukan.getJenisKendaraan());
+    System.out.println("Durasi Sewa        : " + transaksiDitemukan.getDurasiHari() + " Hari");
+    System.out.println("Harga Sewa / Hari  : Rp " + kendaraanDitemukan.getHargaSewaPerHari());
+    System.out.println("Biaya Dasar        : Rp " + biayaDasar);
+    System.out.println("Hari Terlambat     : " + hariTerlambat + " Hari");
+    System.out.println("Denda              : Rp " + denda);
+    System.out.println("Total Bayar        : Rp " + totalBayar);
+    System.out.println("==========================");
+    System.out.println("[SUKSES] Pengembalian berhasil. Status kendaraan berubah menjadi Tersedia.");
+
+    System.out.println("Tekan Enter untuk Kembali ke Menu");
     input.nextLine();
     }
 }
