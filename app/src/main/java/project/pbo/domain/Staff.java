@@ -56,7 +56,7 @@ public class Staff extends Pengguna {
                     prosesPeminjaman();
                     break;
                 case '5':
-                    System.out.println("Fitur pengembalian."); // UBAH/HAPUS NANTI
+                    prosesPengembalian();
                     break;
                 case '0':
                     System.out.println("Logout berhasil.");
@@ -359,109 +359,109 @@ public class Staff extends Pengguna {
     }
 
     public void prosesPengembalian() {
-    Scanner input = new Scanner(System.in);
+        Scanner input = new Scanner(System.in);
 
-    System.out.println("=== MENU PENGEMBALIAN KENDARAAN ===");
-    System.out.println("===================================");
-    System.out.println("= Ketik 0 untuk Kembali ke Menu    =");
-    System.out.println("===================================");
-    // Adit - Staf memasukkan ID Transaksi atau Plat Nomor kendaraan yang dikembalikan.
-    System.out.print("Masukkan ID Transaksi atau Plat Nomor Kendaraan: ");
-    String keyword = input.nextLine().trim();
+        System.out.println("=== MENU PENGEMBALIAN KENDARAAN ===");
+        System.out.println("===================================");
+        System.out.println("= Ketik 0 untuk Kembali ke Menu    =");
+        System.out.println("===================================");
+        // Adit - Staf memasukkan ID Transaksi atau Plat Nomor kendaraan yang dikembalikan.
+        System.out.print("Masukkan ID Transaksi atau Plat Nomor Kendaraan: ");
+        String keyword = input.nextLine().trim();
 
-    if (keyword.equals("0")) {
-        return;
-    }
-
-    //Masukkan semua daftar transaksi (panggil method dari TransaksiRepository.java)
-    List<Transaksi> listTransaksi = transaksiRepo.findAll();
-    Transaksi transaksiDitemukan = null;
-    
-    //Mencari transaksi yang aktif dari daftar transaksi
-    for (Transaksi transaksi : listTransaksi) {
-        boolean idCocok = transaksi.getIdTransaksi() != null && transaksi.getIdTransaksi().equalsIgnoreCase(keyword);
-        boolean platCocok = transaksi.getPlatNomor() != null && transaksi.getPlatNomor().equalsIgnoreCase(keyword);
-
-        if ((idCocok || platCocok) && "AKTIF".equalsIgnoreCase(transaksi.getStatus())) {
-            transaksiDitemukan = transaksi;
-            break;//Jika ditemukan, maka transaksi spesifik tersebut akan digunakan
+        if (keyword.equals("0")) {
+            return;
         }
-    }
 
-    //Jika transaksi tidak ditemukan, kembali ke Menu (setelah ENTER)
-    if (transaksiDitemukan == null) {
-        System.out.println("[GAGAL] Transaksi aktif tidak ditemukan.");
-        System.out.println("Tekan Enter untuk Kembali ke Menu");
-        input.nextLine();
-        return;
-    }
+        //Masukkan semua daftar transaksi (panggil method dari TransaksiRepository.java)
+        List<Transaksi> listTransaksi = transaksiRepo.findAll();
+        Transaksi transaksiDitemukan = null;
+        
+        //Mencari transaksi yang aktif dari daftar transaksi
+        for (Transaksi transaksi : listTransaksi) {
+            boolean idCocok = transaksi.getIdTransaksi() != null && transaksi.getIdTransaksi().equalsIgnoreCase(keyword);
+            boolean platCocok = transaksi.getPlatNomor() != null && transaksi.getPlatNomor().equalsIgnoreCase(keyword);
 
-    //Anggap transaksi spesifik ini DITEMUKAN
-    //Ulik daftar kendaraan untuk cari kendaraan YANG INFORMASINYA ada ada di transaksi yang ditemukan ini
-    List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
-    Kendaraan kendaraanDitemukan = null;
-    for (Kendaraan kendaraan : listKendaraan) {
-        //Mengecek kecocokan plat nomornya (kendaraan == transaksi)
-        if (kendaraan.getPlatNomor().equalsIgnoreCase(transaksiDitemukan.getPlatNomor())) {
-            kendaraanDitemukan = kendaraan;
-            break;
-        }
-    }
-
-    //Jika kendaraan tidak ditemukan, kembali ke Menu (setelah ENTER)
-    if (kendaraanDitemukan == null) {
-        System.out.println("[GAGAL] Data kendaraan untuk transaksi ini tidak ditemukan.");
-        System.out.println("Tekan Enter untuk Kembali ke Menu");
-        input.nextLine();
-        return;
-    }
-    
-    // Adit - Staf memasukkan hari keterlambatan pengembalian (jika tepat waktu, diisi 0).
-    int hariTerlambat;
-    while (true) {
-        System.out.print("Masukkan hari keterlambatan pengembalian (0 jika tepat waktu): ");
-        try {
-            hariTerlambat = Integer.parseInt(input.nextLine().trim());
-            if (hariTerlambat < 0) {
-                System.out.println("[PERINGATAN] Hari keterlambatan tidak boleh negatif.");
-                continue;
+            if ((idCocok || platCocok) && "AKTIF".equalsIgnoreCase(transaksi.getStatus())) {
+                transaksiDitemukan = transaksi;
+                break;//Jika ditemukan, maka transaksi spesifik tersebut akan digunakan
             }
-            break;
-        } catch (NumberFormatException e) {//Exception handler, agar program tidak crash dan tetap lanjut
-            System.out.println("[PERINGATAN] Input harus berupa angka.");
         }
-    }
 
-    //Adit - Sistem menghitung biaya dasar (Harga Sewa Dasar * Durasi Sewa).
-    double biayaDasar = kendaraanDitemukan.getHargaSewaPerHari() * transaksiDitemukan.getDurasiHari();
-    //Adit - (Polymorphism) Denda Mobil dikenakan denda Rp50.000/hari, sedangkan Motor dikenakan denda Rp20.000/hari.
-    double denda = kendaraanDitemukan.hitungDenda(hariTerlambat);//Motor.java & Mobil.java method hitungDenda disesuaikan dengan aturan di atas
-    double totalBayar = biayaDasar + denda;
+        //Jika transaksi tidak ditemukan, kembali ke Menu (setelah ENTER)
+        if (transaksiDitemukan == null) {
+            System.out.println("[GAGAL] Transaksi aktif tidak ditemukan.");
+            System.out.println("Tekan Enter untuk Kembali ke Menu");
+            input.nextLine();
+            return;
+        }
 
-    //Adit - Sistem mengubah status kendaraan kembali menjadi "Tersedia".
-    transaksiDitemukan.setTotalBayar(totalBayar);
-    transaksiDitemukan.setStatus("SELESAI");//ubah juga transaksi status jadi SELESAI
-    kendaraanDitemukan.setStatus("Tersedia");
+        //Anggap transaksi spesifik ini DITEMUKAN
+        //Ulik daftar kendaraan untuk cari kendaraan YANG INFORMASINYA ada ada di transaksi yang ditemukan ini
+        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
+        Kendaraan kendaraanDitemukan = null;
+        for (Kendaraan kendaraan : listKendaraan) {
+            //Mengecek kecocokan plat nomornya (kendaraan == transaksi)
+            if (kendaraan.getPlatNomor().equalsIgnoreCase(transaksiDitemukan.getPlatNomor())) {
+                kendaraanDitemukan = kendaraan;
+                break;
+            }
+        }
 
-    //Save ulang perubahan hasil pengembalian ke repo transaksi dan kendaraan (json)
-    transaksiRepo.saveAll(listTransaksi);
-    kendaraanRepo.saveAll(listKendaraan);
+        //Jika kendaraan tidak ditemukan, kembali ke Menu (setelah ENTER)
+        if (kendaraanDitemukan == null) {
+            System.out.println("[GAGAL] Data kendaraan untuk transaksi ini tidak ditemukan.");
+            System.out.println("Tekan Enter untuk Kembali ke Menu");
+            input.nextLine();
+            return;
+        }
+        
+        // Adit - Staf memasukkan hari keterlambatan pengembalian (jika tepat waktu, diisi 0).
+        int hariTerlambat;
+        while (true) {
+            System.out.print("Masukkan hari keterlambatan pengembalian (0 jika tepat waktu): ");
+            try {
+                hariTerlambat = Integer.parseInt(input.nextLine().trim());
+                if (hariTerlambat < 0) {
+                    System.out.println("[PERINGATAN] Hari keterlambatan tidak boleh negatif.");
+                    continue;
+                }
+                break;
+            } catch (NumberFormatException e) {//Exception handler, agar program tidak crash dan tetap lanjut
+                System.out.println("[PERINGATAN] Input harus berupa angka.");
+            }
+        }
 
-    //Adit - Sistem menampilkan struk tagihan akhir (Biaya Dasar + Denda Keterlambatan).
-    System.out.println("\n=== STRUK TAGIHAN AKHIR ===");
-    System.out.println("ID Transaksi       : " + transaksiDitemukan.getIdTransaksi());
-    System.out.println("Plat Nomor         : " + transaksiDitemukan.getPlatNomor());
-    System.out.println("Jenis Kendaraan    : " + kendaraanDitemukan.getJenisKendaraan());
-    System.out.println("Durasi Sewa        : " + transaksiDitemukan.getDurasiHari() + " Hari");
-    System.out.println("Harga Sewa / Hari  : Rp " + kendaraanDitemukan.getHargaSewaPerHari());
-    System.out.println("Biaya Dasar        : Rp " + biayaDasar);
-    System.out.println("Hari Terlambat     : " + hariTerlambat + " Hari");
-    System.out.println("Denda              : Rp " + denda);
-    System.out.println("Total Bayar        : Rp " + totalBayar);
-    System.out.println("==========================");
-    System.out.println("[SUKSES] Pengembalian berhasil. Status kendaraan berubah menjadi Tersedia.");
+        //Adit - Sistem menghitung biaya dasar (Harga Sewa Dasar * Durasi Sewa).
+        double biayaDasar = kendaraanDitemukan.getHargaSewaPerHari() * transaksiDitemukan.getDurasiHari();
+        //Adit - (Polymorphism) Denda Mobil dikenakan denda Rp50.000/hari, sedangkan Motor dikenakan denda Rp20.000/hari.
+        double denda = kendaraanDitemukan.hitungDenda(hariTerlambat);//Motor.java & Mobil.java method hitungDenda disesuaikan dengan aturan di atas
+        double totalBayar = biayaDasar + denda;
 
-    System.out.println("Tekan Enter untuk Kembali ke Menu");
-    input.nextLine();
+        //Adit - Sistem mengubah status kendaraan kembali menjadi "Tersedia".
+        transaksiDitemukan.setTotalBayar(totalBayar);
+        transaksiDitemukan.setStatus("SELESAI");//ubah juga transaksi status jadi SELESAI
+        kendaraanDitemukan.setStatus("Tersedia");
+
+        //Save ulang perubahan hasil pengembalian ke repo transaksi dan kendaraan (json)
+        transaksiRepo.saveAll(listTransaksi);
+        kendaraanRepo.saveAll(listKendaraan);
+
+        //Adit - Sistem menampilkan struk tagihan akhir (Biaya Dasar + Denda Keterlambatan).
+        System.out.println("\n=== STRUK TAGIHAN AKHIR ===");
+        System.out.println("ID Transaksi       : " + transaksiDitemukan.getIdTransaksi());
+        System.out.println("Plat Nomor         : " + transaksiDitemukan.getPlatNomor());
+        System.out.println("Jenis Kendaraan    : " + kendaraanDitemukan.getJenisKendaraan());
+        System.out.println("Durasi Sewa        : " + transaksiDitemukan.getDurasiHari() + " Hari");
+        System.out.println("Harga Sewa / Hari  : Rp " + kendaraanDitemukan.getHargaSewaPerHari());
+        System.out.println("Biaya Dasar        : Rp " + biayaDasar);
+        System.out.println("Hari Terlambat     : " + hariTerlambat + " Hari");
+        System.out.println("Denda              : Rp " + denda);
+        System.out.println("Total Bayar        : Rp " + totalBayar);
+        System.out.println("==========================");
+        System.out.println("[SUKSES] Pengembalian berhasil. Status kendaraan berubah menjadi Tersedia.");
+
+        System.out.println("Tekan Enter untuk Kembali ke Menu");
+        input.nextLine();
     }
 }
