@@ -14,8 +14,13 @@ public class Motor extends Kendaraan {
         return jenisTransmisi;
     }
 
+    //Adit (feat/return-logic) : diubah ini agar sesuai dengan aturan denda (Mobil 50k/hari & Motor 20k/hari)
+    @Override
     public double hitungDenda(int hariTerlambat) {
-        return super.hitungDenda(hariTerlambat);
+        if (hariTerlambat <= 0) {
+            return 0;
+        }
+        return hariTerlambat * 20000;
     }
 
     // OVERRIDE METHOD: Mengambil input transmisi khusus objek motor itu sendiri

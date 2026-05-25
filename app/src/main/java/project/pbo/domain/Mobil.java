@@ -15,8 +15,13 @@ public class Mobil extends Kendaraan {
         return jumlahPintu;
     }
 
+    //Adit (feat/return-logic) : diubah ini agar sesuai dengan aturan denda (Mobil 50k/hari & Motor 20k/hari)
+    @Override
     public double hitungDenda(int hariTerlambat) {
-        return super.hitungDenda(hariTerlambat);
+        if (hariTerlambat <= 0) {
+            return 0;
+        }
+        return hariTerlambat * 50000;
     }
 
     @Override

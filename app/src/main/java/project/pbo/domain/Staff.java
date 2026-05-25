@@ -415,7 +415,29 @@ public class Staff extends Pengguna {
         input.nextLine();
         return;
     }
+    
+    // Adit - Staf memasukkan hari keterlambatan pengembalian (jika tepat waktu, diisi 0).
+    int hariTerlambat;
+    while (true) {
+        System.out.print("Masukkan hari keterlambatan pengembalian (0 jika tepat waktu): ");
+        try {
+            hariTerlambat = Integer.parseInt(input.nextLine().trim());
+            if (hariTerlambat < 0) {
+                System.out.println("[PERINGATAN] Hari keterlambatan tidak boleh negatif.");
+                continue;
+            }
+            break;
+        } catch (NumberFormatException e) {//Exception handler, agar program tidak crash dan tetap lanjut
+            System.out.println("[PERINGATAN] Input harus berupa angka.");
+        }
+    }
 
+    //Adit - Sistem menghitung biaya dasar (Harga Sewa Dasar * Durasi Sewa).
+    double biayaDasar = kendaraanDitemukan.getHargaSewaPerHari() * transaksiDitemukan.getDurasiHari();
+    //Adit - (Polymorphism) Denda Mobil dikenakan denda Rp50.000/hari, sedangkan Motor dikenakan denda Rp20.000/hari.
+    double denda = kendaraanDitemukan.hitungDenda(hariTerlambat);//Motor.java & Mobil.java method hitungDenda disesuaikan dengan aturan di atas
+    double totalBayar = biayaDasar + denda;
+    
     input.nextLine();
     }
 }
