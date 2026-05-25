@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KendaraanRepository {
-    private static final String FILE_PATH = "kendaraan.json";
+    private static final String FILE_PATH = "app/data/kendaraan.json";
     private final Gson gson;
 
     public KendaraanRepository() {
