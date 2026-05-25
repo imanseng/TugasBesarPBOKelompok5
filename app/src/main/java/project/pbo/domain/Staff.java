@@ -35,7 +35,7 @@ public class Staff extends Pengguna {
             System.out.println("1. Daftar Pelanggan Baru");
             System.out.println("2. Cari Data Pelanggan");
             System.out.println("3. Cek Kendaraan Tersedia");
-            System.out.println("Proses Peminjaman (Sewa)");
+            System.out.println("4. Proses Peminjaman (Sewa)");
             System.out.println("5. Proses Pengambilan");
             System.out.println("0. Logout");
             System.out.println("\nPilihan Anda > ");
@@ -359,5 +359,63 @@ public class Staff extends Pengguna {
     }
 
     public void prosesPengembalian() {
+    Scanner input = new Scanner(System.in);
+
+    System.out.println("=== MENU PENGEMBALIAN KENDARAAN ===");
+    System.out.println("===================================");
+    System.out.println("= Ketik 0 untuk Kembali ke Menu    =");
+    System.out.println("===================================");
+    // Adit - Staf memasukkan ID Transaksi atau Plat Nomor kendaraan yang dikembalikan.
+    System.out.print("Masukkan ID Transaksi atau Plat Nomor Kendaraan: ");
+    String keyword = input.nextLine().trim();
+
+    if (keyword.equals("0")) {
+        return;
+    }
+
+    //Masukkan semua daftar transaksi (panggil method dari TransaksiRepository.java)
+    List<Transaksi> listTransaksi = transaksiRepo.findAll();
+    Transaksi transaksiDitemukan = null;
+    
+    //Mencari transaksi yang aktif dari daftar transaksi
+    for (Transaksi transaksi : listTransaksi) {
+        boolean idCocok = transaksi.getIdTransaksi() != null && transaksi.getIdTransaksi().equalsIgnoreCase(keyword);
+        boolean platCocok = transaksi.getPlatNomor() != null && transaksi.getPlatNomor().equalsIgnoreCase(keyword);
+
+        if ((idCocok || platCocok) && "AKTIF".equalsIgnoreCase(transaksi.getStatus())) {
+            transaksiDitemukan = transaksi;
+            break;//Jika ditemukan, maka transaksi spesifik tersebut akan digunakan
+        }
+    }
+
+    //Jika transaksi tidak ditemukan, kembali ke Menu (setelah ENTER)
+    if (transaksiDitemukan == null) {
+        System.out.println("[GAGAL] Transaksi aktif tidak ditemukan.");
+        System.out.println("Tekan Enter untuk Kembali ke Menu");
+        input.nextLine();
+        return;
+    }
+
+    //Anggap transaksi spesifik ini DITEMUKAN
+    //Ulik daftar kendaraan untuk cari kendaraan YANG INFORMASINYA ada ada di transaksi yang ditemukan ini
+    List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
+    Kendaraan kendaraanDitemukan = null;
+    for (Kendaraan kendaraan : listKendaraan) {
+        //Mengecek kecocokan plat nomornya (kendaraan == transaksi)
+        if (kendaraan.getPlatNomor().equalsIgnoreCase(transaksiDitemukan.getPlatNomor())) {
+            kendaraanDitemukan = kendaraan;
+            break;
+        }
+    }
+
+    //Jika kendaraan tidak ditemukan, kembali ke Menu (setelah ENTER)
+    if (kendaraanDitemukan == null) {
+        System.out.println("[GAGAL] Data kendaraan untuk transaksi ini tidak ditemukan.");
+        System.out.println("Tekan Enter untuk Kembali ke Menu");
+        input.nextLine();
+        return;
+    }
+
+    input.nextLine();
     }
 }
