@@ -40,7 +40,7 @@ public class Admin extends Pengguna {
                     lihatDaftarKendaraan();
                     break;
                 case '3':
-                    System.out.println("Fitur hapus kendaraan (Monic/Robby)."); // UBAH/HAPUS NANTI
+                    hapusKendaraan(); // MONIC
                     break;
                 case '0':
                     System.out.println("Logout berhasil.");
@@ -178,4 +178,66 @@ public class Admin extends Pengguna {
         System.out.println("\nTekan ENTER untuk kembali ke menu utama...");
         input.nextLine(); 
     }
+    
+    // MONIC - Menu 3 Admin: Hapus kendaraan (feat/delete-vehicle)
+public void hapusKendaraan() {
+    Scanner input = new Scanner(System.in);
+    List<Kendaraan> listKendaraan = repo.loadAll();
+
+    System.out.println("\n========================================");
+    System.out.println("         MENU HAPUS KENDARAAN           ");
+    System.out.println("========================================");
+
+    if (listKendaraan.isEmpty()) {
+        System.out.println("  Data kendaraan masih kosong. Tidak ada yang bisa dihapus.");
+        System.out.println("\nTekan ENTER untuk kembali ke menu utama...");
+        input.nextLine();
+        return;
+    }
+
+    while (true) {
+        System.out.print("\nMasukkan Plat Nomor yang ingin dihapus (ketik 0 untuk kembali): ");
+        String platNomor = input.nextLine().trim().toUpperCase();
+
+        if (platNomor.equals("0")) {
+            System.out.println("Kembali ke menu utama.");
+            return;
+        }
+
+        if (platNomor.isEmpty()) {
+            System.out.println("[!] Plat Nomor tidak boleh kosong!");
+            continue;
+        }
+
+        Kendaraan kendaraanDitemukan = null;
+        for (Kendaraan k : listKendaraan) {
+            if (k.getPlatNomor().equalsIgnoreCase(platNomor)) {
+                kendaraanDitemukan = k;
+                break;
+            }
+        }
+
+        if (kendaraanDitemukan == null) {
+            System.out.println("[ERROR] Kendaraan dengan plat nomor " + platNomor + " tidak ditemukan di sistem!");
+            continue;
+        }
+
+        System.out.println("\n--- Detail Kendaraan Ditemukan ---");
+        kendaraanDitemukan.tampilkanInfo();
+        System.out.println("----------------------------------");
+
+        if (kendaraanDitemukan.getStatus().equalsIgnoreCase("SEDANG DISEWA")) {
+            System.out.println("[GAGAL] Kendaraan " + platNomor
+                    + " masih berstatus SEDANG DISEWA, data tidak dapat dihapus!");
+            continue;
+        }
+
+        listKendaraan.remove(kendaraanDitemukan);
+        repo.saveAll(listKendaraan);
+        System.out.println("\n[SUKSES] Kendaraan " + platNomor + " berhasil dihapus dari sistem.");
+        System.out.println("\nTekan ENTER untuk kembali ke menu utama...");
+        input.nextLine();
+        return;
+    }
+}
 }
