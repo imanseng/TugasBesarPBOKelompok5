@@ -48,7 +48,6 @@ public class Admin extends Pengguna {
                     System.out.println("Pilihan tidak valid!");
             }
         } while (pilihanMenu != '0');
-        input.close();
     }
 
     // IMAN - Menambah Kendaraan (feat/add-vehicle)
