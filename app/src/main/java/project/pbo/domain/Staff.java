@@ -258,8 +258,6 @@ public class Staff extends Pengguna {
         }
 
         // Input durasi sewa
-        System.out.println("Masukkan Durasi Sewa (dalam hari): ");
-
         int durasi;
         while (true) {
             System.out.println("Masukkan Durasi Sewa (dalam hari): ");
