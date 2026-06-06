@@ -12,7 +12,6 @@ public class Admin extends Pengguna {
     public Admin(String username, String password, String role) {
         super(username, password, role);
         this.pilihanMenu = ' ';
-        prosesMenu();
     }
 
     // IMAN - Menjalankan Menu
@@ -64,7 +63,7 @@ public class Admin extends Pengguna {
         List<Kendaraan> listKendaraan = repo.loadAll();
 
         // Input wajib Plat Nomor, Harga Sewa per Hari, dan Jenis Kendaraan (Mobil/Motor).
-        do {
+        while (true) {
             System.out.println("=== TAMBAH KENDARAAN ===");
             System.out.print("\nMasukkan Plat Nomor Kendaraan: ");
             platNomor = input.nextLine().trim().toUpperCase();
@@ -83,22 +82,41 @@ public class Admin extends Pengguna {
                 continue; // Melempar alur kembali ke input plat nomor teratas
             }
 
-            System.out.print("Masukkan Harga Sewa per Hari: ");
-            hargaSewa = input.nextDouble();
-            input.nextLine(); // Pembersih buffer scanner
-
-            System.out.println("Silahkan pilih jenis kendaraan:");
-            System.out.println("1. Mobil");
-            System.out.println("2. Motor");
-            System.out.println("0. Batalkan proses");
-            System.out.print("\nPilihan Anda > ");
-            jenis = input.nextInt();
-            input.nextLine(); // Pembersih buffer scanner
-
-            if (jenis < 0 || jenis > 2) {
-                System.out.println("Pilihan tidak valid!");
+            while (true) {
+                System.out.print("Masukkan Harga Sewa per Hari: ");
+                try {
+                    hargaSewa = Double.parseDouble(input.nextLine().trim());
+                    if (hargaSewa <= 0) {
+                        System.out.println("[PERINGATAN] Harga sewa harus lebih dari 0.");
+                        continue;
+                    }
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("[PERINGATAN] Harga sewa harus berupa angka.");
+                }
             }
-        } while (jenis < 0 || jenis > 2);
+
+            while (true) {
+                System.out.println("Silahkan pilih jenis kendaraan:");
+                System.out.println("1. Mobil");
+                System.out.println("2. Motor");
+                System.out.println("0. Batalkan proses");
+                System.out.print("\nPilihan Anda > ");
+
+                try {
+                    jenis = Integer.parseInt(input.nextLine().trim());
+                    if (jenis < 0 || jenis > 2) {
+                        System.out.println("Pilihan tidak valid!");
+                        continue;
+                    }
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("[PERINGATAN] Pilihan harus berupa angka.");
+                }
+            }
+
+            break;
+        }
 
         // Catatan: Baris input.close() dihapus agar stream console tidak mati
 
@@ -115,7 +133,7 @@ public class Admin extends Pengguna {
             // Mengisi jumlah pintu langsung via method milik Mobil
             kendaraanBaru.inputSpesifik(input);
             System.out.println("[DEBUG LOG] Objek mobil berhasil dibuat dengan aman.");
-            
+
         } else if (jenis == 2) {
             // Instansiasi objek Motor dengan nilai default transmisi = "" di awal
             kendaraanBaru = new Motor(platNomor, hargaSewa, "Motor", "");
