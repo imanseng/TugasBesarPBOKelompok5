@@ -22,7 +22,6 @@ public class Staff extends Pengguna {
     public Staff(String username, String password, String role) {
         super(username, password, role);
         this.pilihanMenu = ' ';
-        prosesMenu();
     }
 
     // BELUM DI IMPLEMENT
@@ -78,6 +77,7 @@ public class Staff extends Pengguna {
             }
             if (validasiDataNomorKTP(nik)) {
                 System.out.println("Pelanggan dengan KTP tersebut sudah terdaftar!");
+                continue;
             }
             break;
         }
@@ -86,6 +86,9 @@ public class Staff extends Pengguna {
         System.out.println("Masukkan No Telepon: ");
         noTelp = input.nextLine();
 
+        Pelanggan pelangganBaru = new Pelanggan(nik, namaPelanggan, noTelp);
+        pelangganRepo.save(pelangganBaru);
+        System.out.println("[SUKSES] Data pelanggan berhasil disimpan ke JSON.");
     }
 
     public boolean validasiNomorKtp(String nik) {
@@ -255,9 +258,16 @@ public class Staff extends Pengguna {
         }
 
         // Input durasi sewa
-        System.out.println("Masukkan Durasi Sewa (dalam hari): ");
-        int durasi = input.nextInt();
-        input.nextLine();
+        int durasi;
+        while (true) {
+            System.out.println("Masukkan Durasi Sewa (dalam hari): ");
+            try {
+                durasi = Integer.parseInt(input.nextLine().trim());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("[PERINGATAN] Durasi sewa harus berupa angka.");
+            }
+        }
 
         if (durasi <= 0) {
             System.out.println("[GAGAL] Durasi sewa tidak valid!");
@@ -434,9 +444,22 @@ public class Staff extends Pengguna {
 
         //Adit - Sistem menghitung biaya dasar (Harga Sewa Dasar * Durasi Sewa).
         double biayaDasar = kendaraanDitemukan.getHargaSewaPerHari() * transaksiDitemukan.getDurasiHari();
+
+        double biayaKirim = 0;
+        if (transaksiDitemukan.isDelivery()) {
+            String zonaKirim = transaksiDitemukan.getZonaKirim();
+            if ("A".equalsIgnoreCase(zonaKirim)) {
+                biayaKirim = 150000;
+            } else if ("B".equalsIgnoreCase(zonaKirim)) {
+                biayaKirim = 100000;
+            } else if ("C".equalsIgnoreCase(zonaKirim)) {
+                biayaKirim = 50000;
+            }
+        }
+
         //Adit - (Polymorphism) Denda Mobil dikenakan denda Rp50.000/hari, sedangkan Motor dikenakan denda Rp20.000/hari.
         double denda = kendaraanDitemukan.hitungDenda(hariTerlambat);//Motor.java & Mobil.java method hitungDenda disesuaikan dengan aturan di atas
-        double totalBayar = biayaDasar + denda;
+        double totalBayar = biayaDasar + biayaKirim + denda;
 
         //Adit - Sistem mengubah status kendaraan kembali menjadi "Tersedia".
         transaksiDitemukan.setTotalBayar(totalBayar);
@@ -455,6 +478,7 @@ public class Staff extends Pengguna {
         System.out.println("Durasi Sewa        : " + transaksiDitemukan.getDurasiHari() + " Hari");
         System.out.println("Harga Sewa / Hari  : Rp " + kendaraanDitemukan.getHargaSewaPerHari());
         System.out.println("Biaya Dasar        : Rp " + biayaDasar);
+        System.out.println("Biaya Delivery     : Rp " + biayaKirim);
         System.out.println("Hari Terlambat     : " + hariTerlambat + " Hari");
         System.out.println("Denda              : Rp " + denda);
         System.out.println("Total Bayar        : Rp " + totalBayar);

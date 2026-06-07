@@ -28,9 +28,14 @@ public class Mobil extends Kendaraan {
     public void inputSpesifik(Scanner scanner) {
         do {
             System.out.print("Masukkan jumlah pintu: ");
-            this.jumlahPintu = scanner.nextInt();
-            if (this.jumlahPintu <= 0 || this.jumlahPintu > 4) {
-                System.out.println("Jumlah pintu harus diantara 1 sampai 4!");
+            try {
+                this.jumlahPintu = Integer.parseInt(scanner.nextLine().trim());
+                if (this.jumlahPintu <= 0 || this.jumlahPintu > 4) {
+                    System.out.println("Jumlah pintu harus diantara 1 sampai 4!");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("[PERINGATAN] Jumlah pintu harus berupa angka.");
+                this.jumlahPintu = 0;
             }
         } while (this.jumlahPintu <= 0 || this.jumlahPintu > 4);
     }
