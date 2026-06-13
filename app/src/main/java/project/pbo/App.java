@@ -6,6 +6,7 @@ import project.pbo.domain.Owner;
 import project.pbo.domain.Pengguna;
 import project.pbo.service.AuthService;
 import project.pbo.presentation.AdminMenu;
+import project.pbo.presentation.StaffMenu;
 
 import java.util.Scanner;
 
@@ -73,7 +74,8 @@ public class App {
                 break;
             case "staff":
                 Staff staff = new Staff(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
-                staff.prosesMenu();
+                StaffMenu staffMenu = new StaffMenu(staff);
+                staffMenu.prosesMenu();
                 break;
             case "owner":
                 Owner owner = new Owner(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
