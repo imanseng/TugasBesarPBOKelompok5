@@ -10,8 +10,9 @@ import project.pbo.domain.Staff;
 import project.pbo.domain.Transaksi;
 import project.pbo.repository.KendaraanRepository;
 import project.pbo.repository.PelangganRepository;
-import project.pbo.repository.TransaksiRepository;
 import project.pbo.service.KendaraanService;
+import project.pbo.service.PelangganService;
+import project.pbo.service.TransaksiService;
 import project.pbo.service.PelangganService;
 
 public class StaffMenu {
@@ -19,9 +20,9 @@ public class StaffMenu {
     private final Staff staff;
 
     private final PelangganRepository pelangganRepo = new PelangganRepository();
-    private final TransaksiRepository transaksiRepo = new TransaksiRepository();
     private final PelangganService pelangganService = new PelangganService();
     private final KendaraanService kendaraanService = new KendaraanService();
+    private final TransaksiService transaksiService = new TransaksiService();
 
     public StaffMenu(Staff staff) {
         this.staff = staff;
@@ -262,15 +263,7 @@ public class StaffMenu {
             }
         }
 
-        double totalBayar = (durasi * kendaraanDitemukan.getHargaSewaPerHari()) + biayaKirim;
-
-        List<Transaksi> listTransaksi = transaksiRepo.findAll();
-        String idTransaksi = generateIdTransaksi(listTransaksi);
-
-        Transaksi transaksiBaru = new Transaksi(idTransaksi, nikInput, platNomorInput, durasi, totalBayar, "AKTIF", isDelivery, zonaKirim);
-
-        transaksiRepo.tambah(transaksiBaru);
-        kendaraanService.updateStatusKendaraan(kendaraanDitemukan, "SEDANG DISEWA");
+        Transaksi transaksiBaru = transaksiService.prosesPeminjaman(nikInput, kendaraanDitemukan, durasi, isDelivery, zonaKirim, biayaKirim);
 
         System.out.println("\nMemproses transaksi...");
         transaksiBaru.tampilkanStruk(pelangganDitemukan.getNamaPelanggan(), kendaraanDitemukan.getJenisKendaraan());
@@ -279,23 +272,7 @@ public class StaffMenu {
         input.nextLine();
     }
 
-    private String generateIdTransaksi(List<Transaksi> listTransaksi) {
-        int maxNum = 0;
 
-        for (Transaksi t : listTransaksi) {
-            if (t.getIdTransaksi() != null && t.getIdTransaksi().startsWith("TRX-")) {
-                try {
-                    String numberStr = t.getIdTransaksi().substring(4);
-                    int number = Integer.parseInt(numberStr);
-                    if (number > maxNum) {
-                        maxNum = number;
-                    }
-                } catch (NumberFormatException e) {
-                }
-            }
-        }
-        return String.format("TRX-%03d", maxNum + 1);
-    }
 
     public void prosesPengembalian() {
         Scanner input = new Scanner(System.in);
@@ -311,7 +288,7 @@ public class StaffMenu {
             return;
         }
 
-        List<Transaksi> listTransaksi = transaksiRepo.findAll();
+        List<Transaksi> listTransaksi = transaksiService.getAllTransaksi();
         Transaksi transaksiDitemukan = null;
         
         for (Transaksi transaksi : listTransaksi) {
@@ -355,27 +332,12 @@ public class StaffMenu {
             }
         }
 
-        double biayaDasar = kendaraanDitemukan.getHargaSewaPerHari() * transaksiDitemukan.getDurasiHari();
-
-        double biayaKirim = 0;
-        if (transaksiDitemukan.isDelivery()) {
-            String zonaKirim = transaksiDitemukan.getZonaKirim();
-            if ("A".equalsIgnoreCase(zonaKirim)) {
-                biayaKirim = 150000;
-            } else if ("B".equalsIgnoreCase(zonaKirim)) {
-                biayaKirim = 100000;
-            } else if ("C".equalsIgnoreCase(zonaKirim)) {
-                biayaKirim = 50000;
-            }
-        }
-
+        double biayaDasar = transaksiService.hitungBiayaDasar(transaksiDitemukan, kendaraanDitemukan);
+        double biayaKirim = transaksiService.hitungBiayaKirim(transaksiDitemukan);
         double denda = kendaraanDitemukan.hitungDenda(hariTerlambat);
         double totalBayar = biayaDasar + biayaKirim + denda;
 
-        transaksiDitemukan.setTotalBayar(totalBayar);
-        transaksiDitemukan.setStatus("SELESAI");
-        transaksiRepo.saveAll(listTransaksi);
-        kendaraanService.updateStatusKendaraan(kendaraanDitemukan, "Tersedia");
+        transaksiService.selesaikanPengembalian(transaksiDitemukan, kendaraanDitemukan, totalBayar);
 
         System.out.println("\n=== STRUK TAGIHAN AKHIR ===");
         System.out.println("ID Transaksi       : " + transaksiDitemukan.getIdTransaksi());
