@@ -5,6 +5,9 @@ import project.pbo.domain.Staff;
 import project.pbo.domain.Owner;
 import project.pbo.domain.Pengguna;
 import project.pbo.service.AuthService;
+import project.pbo.presentation.AdminMenu;
+import project.pbo.presentation.StaffMenu;
+import project.pbo.presentation.OwnerMenu;
 
 import java.util.Scanner;
 
@@ -67,15 +70,18 @@ public class App {
         switch (role) {
             case "admin":
                 Admin admin = new Admin(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
-                admin.prosesMenu(); 
+                AdminMenu adminMenu = new AdminMenu(admin);
+                adminMenu.prosesMenu(); 
                 break;
             case "staff":
                 Staff staff = new Staff(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
-                staff.prosesMenu();
+                StaffMenu staffMenu = new StaffMenu(staff);
+                staffMenu.prosesMenu();
                 break;
             case "owner":
                 Owner owner = new Owner(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
-                owner.prosesMenu();
+                OwnerMenu ownerMenu = new OwnerMenu(owner);
+                ownerMenu.prosesMenu();
                 break;
             default:
                 System.out.println("[ERROR] Role tidak dikenali: " + pengguna.getRole());
