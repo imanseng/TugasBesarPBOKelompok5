@@ -8,17 +8,17 @@ import project.pbo.domain.Kendaraan;
 import project.pbo.domain.Pelanggan;
 import project.pbo.domain.Staff;
 import project.pbo.domain.Transaksi;
-import project.pbo.repository.KendaraanRepository;
-import project.pbo.repository.PelangganRepository;
-import project.pbo.repository.TransaksiRepository;
+import project.pbo.service.KendaraanService;
+import project.pbo.service.PelangganService;
+import project.pbo.service.TransaksiService;
 
 public class StaffMenu {
     private char pilihanMenu;
     private final Staff staff;
 
-    private final PelangganRepository pelangganRepo = new PelangganRepository();
-    private final KendaraanRepository kendaraanRepo = new KendaraanRepository();
-    private final TransaksiRepository transaksiRepo = new TransaksiRepository();
+    private final PelangganService pelangganService = new PelangganService();
+    private final KendaraanService kendaraanService = new KendaraanService();
+    private final TransaksiService transaksiService = new TransaksiService();
 
     public StaffMenu(Staff staff) {
         this.staff = staff;
@@ -81,10 +81,10 @@ public class StaffMenu {
         while (true) {
             System.out.println("Masukkan Nomor KTP: ");
             nik = input.nextLine();
-            if (!validasiNomorKtp(nik)) {
+            if (!pelangganService.validasiNomorKtp(nik)) {
                 continue;
             }
-            if (validasiDataNomorKTP(nik)) {
+            if (pelangganService.validasiDataNomorKTP(nik)) {
                 System.out.println("Pelanggan dengan KTP tersebut sudah terdaftar!");
                 continue;
             }
@@ -95,31 +95,8 @@ public class StaffMenu {
         System.out.println("Masukkan No Telepon: ");
         noTelp = input.nextLine();
 
-        Pelanggan pelangganBaru = new Pelanggan(nik, namaPelanggan, noTelp);
-        pelangganRepo.save(pelangganBaru);
+        pelangganService.tambahPelanggan(nik, namaPelanggan, noTelp);
         System.out.println("[SUKSES] Data pelanggan berhasil disimpan ke JSON.");
-    }
-
-    public boolean validasiNomorKtp(String nik) {
-        if (nik.trim().isEmpty()) {
-            System.out.println("Nomor KTP tidak boleh kosong!");
-            return false;
-        }
-        if (!nik.matches("\\d{16}")) {
-            System.out.println("Nomor KTP harus diisi 16 angka!");
-            return false;
-        }
-        return true;
-    }
-
-    public boolean validasiDataNomorKTP(String nik) {
-        List<Pelanggan> listPelanggan = pelangganRepo.loadAll();
-        for (Pelanggan list : listPelanggan) {
-            if (list.getNik().equals(nik)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void cariDataPelanggan() {
@@ -135,15 +112,7 @@ public class StaffMenu {
             return;
         }
 
-        List<Pelanggan> listPelanggan = pelangganRepo.loadAll();
-        Pelanggan pelangganDiTemukan = null;
-
-        for (Pelanggan pelanggan : listPelanggan) {
-            if (pelanggan.getNik().equals(nikCari)) {
-                pelangganDiTemukan = pelanggan;
-                break;
-            }
-        }
+        Pelanggan pelangganDiTemukan = pelangganService.cariByNik(nikCari);
 
         if (pelangganDiTemukan != null) {
             System.out.println("================================");
@@ -165,15 +134,8 @@ public class StaffMenu {
     public void cekKendaraanTersedia() {
         Scanner input = new Scanner(System.in);
 
-        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
         System.out.println("=== DAFTAR KENDARAAN YANG TERSEDIA ===");
-        List<Kendaraan> listKendaraanTersedia = new ArrayList<>();
-
-        for (Kendaraan kendaraan : listKendaraan) {
-            if (kendaraan.getStatus().equalsIgnoreCase("Tersedia")) {
-                listKendaraanTersedia.add(kendaraan);
-            }
-        }
+        List<Kendaraan> listKendaraanTersedia = kendaraanService.getKendaraanTersedia();
 
         if (listKendaraanTersedia.isEmpty()) {
             System.out.println("Tidak ada kendaraan yang tersedia saat ini.");
@@ -206,15 +168,7 @@ public class StaffMenu {
             return;
         }
 
-        List<Pelanggan> listPelanggan = pelangganRepo.loadAll();
-        Pelanggan pelangganDitemukan = null;
-
-        for (Pelanggan pelanggan : listPelanggan) {
-            if (pelanggan.getNik().equals(nikInput)) {
-                pelangganDitemukan = pelanggan;
-                break;
-            }
-        }
+        Pelanggan pelangganDitemukan = pelangganService.cariByNik(nikInput);
 
         if (pelangganDitemukan == null) {
             System.out.println("[GAGAL] Nomor KTP tidak terdaftar!");
@@ -230,20 +184,11 @@ public class StaffMenu {
             return;
         }
 
-        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
-        Kendaraan kendaraanDitemukan = null;
+        Kendaraan kendaraanDitemukan = kendaraanService.cariKendaraanByPlat(platNomorInput);
 
-        for (int i = 0; i < listKendaraan.size(); i++) {
-            Kendaraan k = listKendaraan.get(i);
-            if (k.getPlatNomor().equalsIgnoreCase(platNomorInput)) {
-                if (k.getStatus().equalsIgnoreCase("TERSEDIA")) {
-                    kendaraanDitemukan = k;
-                } else {
-                    System.out.println("[GAGAL] Kendaraan sedang disewa!");
-                    return;
-                }
-                break;
-            }
+        if (kendaraanDitemukan != null && !kendaraanDitemukan.getStatus().equalsIgnoreCase("TERSEDIA")) {
+            System.out.println("[GAGAL] Kendaraan sedang disewa!");
+            return;
         }
 
         if (kendaraanDitemukan == null) {
@@ -314,17 +259,7 @@ public class StaffMenu {
             }
         }
 
-        double totalBayar = (durasi * kendaraanDitemukan.getHargaSewaPerHari()) + biayaKirim;
-
-        List<Transaksi> listTransaksi = transaksiRepo.findAll();
-        String idTransaksi = generateIdTransaksi(listTransaksi);
-
-        Transaksi transaksiBaru = new Transaksi(idTransaksi, nikInput, platNomorInput, durasi, totalBayar, "AKTIF", isDelivery, zonaKirim);
-
-        kendaraanDitemukan.setStatus("SEDANG DISEWA");
-
-        transaksiRepo.tambah(transaksiBaru);
-        kendaraanRepo.saveAll(listKendaraan);
+        Transaksi transaksiBaru = transaksiService.prosesPeminjaman(nikInput, kendaraanDitemukan, durasi, isDelivery, zonaKirim, biayaKirim);
 
         System.out.println("\nMemproses transaksi...");
         transaksiBaru.tampilkanStruk(pelangganDitemukan.getNamaPelanggan(), kendaraanDitemukan.getJenisKendaraan());
@@ -333,23 +268,7 @@ public class StaffMenu {
         input.nextLine();
     }
 
-    private String generateIdTransaksi(List<Transaksi> listTransaksi) {
-        int maxNum = 0;
 
-        for (Transaksi t : listTransaksi) {
-            if (t.getIdTransaksi() != null && t.getIdTransaksi().startsWith("TRX-")) {
-                try {
-                    String numberStr = t.getIdTransaksi().substring(4);
-                    int number = Integer.parseInt(numberStr);
-                    if (number > maxNum) {
-                        maxNum = number;
-                    }
-                } catch (NumberFormatException e) {
-                }
-            }
-        }
-        return String.format("TRX-%03d", maxNum + 1);
-    }
 
     public void prosesPengembalian() {
         Scanner input = new Scanner(System.in);
@@ -365,18 +284,7 @@ public class StaffMenu {
             return;
         }
 
-        List<Transaksi> listTransaksi = transaksiRepo.findAll();
-        Transaksi transaksiDitemukan = null;
-        
-        for (Transaksi transaksi : listTransaksi) {
-            boolean idCocok = transaksi.getIdTransaksi() != null && transaksi.getIdTransaksi().equalsIgnoreCase(keyword);
-            boolean platCocok = transaksi.getPlatNomor() != null && transaksi.getPlatNomor().equalsIgnoreCase(keyword);
-
-            if ((idCocok || platCocok) && "AKTIF".equalsIgnoreCase(transaksi.getStatus())) {
-                transaksiDitemukan = transaksi;
-                break;
-            }
-        }
+        Transaksi transaksiDitemukan = transaksiService.cariTransaksiAktif(keyword);
 
         if (transaksiDitemukan == null) {
             System.out.println("[GAGAL] Transaksi aktif tidak ditemukan.");
@@ -385,14 +293,7 @@ public class StaffMenu {
             return;
         }
 
-        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
-        Kendaraan kendaraanDitemukan = null;
-        for (Kendaraan kendaraan : listKendaraan) {
-            if (kendaraan.getPlatNomor().equalsIgnoreCase(transaksiDitemukan.getPlatNomor())) {
-                kendaraanDitemukan = kendaraan;
-                break;
-            }
-        }
+        Kendaraan kendaraanDitemukan = kendaraanService.cariKendaraanByPlat(transaksiDitemukan.getPlatNomor());
 
         if (kendaraanDitemukan == null) {
             System.out.println("[GAGAL] Data kendaraan untuk transaksi ini tidak ditemukan.");
@@ -416,29 +317,12 @@ public class StaffMenu {
             }
         }
 
-        double biayaDasar = kendaraanDitemukan.getHargaSewaPerHari() * transaksiDitemukan.getDurasiHari();
-
-        double biayaKirim = 0;
-        if (transaksiDitemukan.isDelivery()) {
-            String zonaKirim = transaksiDitemukan.getZonaKirim();
-            if ("A".equalsIgnoreCase(zonaKirim)) {
-                biayaKirim = 150000;
-            } else if ("B".equalsIgnoreCase(zonaKirim)) {
-                biayaKirim = 100000;
-            } else if ("C".equalsIgnoreCase(zonaKirim)) {
-                biayaKirim = 50000;
-            }
-        }
-
+        double biayaDasar = transaksiService.hitungBiayaDasar(transaksiDitemukan, kendaraanDitemukan);
+        double biayaKirim = transaksiService.hitungBiayaKirim(transaksiDitemukan);
         double denda = kendaraanDitemukan.hitungDenda(hariTerlambat);
         double totalBayar = biayaDasar + biayaKirim + denda;
 
-        transaksiDitemukan.setTotalBayar(totalBayar);
-        transaksiDitemukan.setStatus("SELESAI");
-        kendaraanDitemukan.setStatus("Tersedia");
-
-        transaksiRepo.saveAll(listTransaksi);
-        kendaraanRepo.saveAll(listKendaraan);
+        transaksiService.selesaikanPengembalian(transaksiDitemukan, kendaraanDitemukan, totalBayar);
 
         System.out.println("\n=== STRUK TAGIHAN AKHIR ===");
         System.out.println("ID Transaksi       : " + transaksiDitemukan.getIdTransaksi());
