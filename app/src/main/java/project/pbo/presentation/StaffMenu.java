@@ -97,8 +97,7 @@ public class StaffMenu {
         System.out.println("Masukkan No Telepon: ");
         noTelp = input.nextLine();
 
-        Pelanggan pelangganBaru = new Pelanggan(nik, namaPelanggan, noTelp);
-        pelangganRepo.save(pelangganBaru);
+        pelangganService.tambahPelanggan(nik, namaPelanggan, noTelp);
         System.out.println("[SUKSES] Data pelanggan berhasil disimpan ke JSON.");
     }
 
@@ -178,15 +177,7 @@ public class StaffMenu {
             return;
         }
 
-        List<Pelanggan> listPelanggan = pelangganRepo.loadAll();
-        Pelanggan pelangganDitemukan = null;
-
-        for (Pelanggan pelanggan : listPelanggan) {
-            if (pelanggan.getNik().equals(nikInput)) {
-                pelangganDitemukan = pelanggan;
-                break;
-            }
-        }
+        Pelanggan pelangganDitemukan = pelangganService.cariByNik(nikInput);
 
         if (pelangganDitemukan == null) {
             System.out.println("[GAGAL] Nomor KTP tidak terdaftar!");

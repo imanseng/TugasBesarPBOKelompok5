@@ -41,4 +41,10 @@ public class PelangganService {
         }
         return null;
     }
+
+    // Pindah fitur simpan pelanggan dari StaffMenu ke sini
+    public void tambahPelanggan(String nik, String namaPelanggan, String noTelp) {
+        Pelanggan pelangganBaru = new Pelanggan(nik, namaPelanggan, noTelp);
+        pelangganRepo.save(pelangganBaru);
+    }
 }
