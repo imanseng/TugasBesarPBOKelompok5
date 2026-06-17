@@ -78,5 +78,19 @@ public class TransaksiService {
         
         kendaraanService.updateStatusKendaraan(kendaraan, "Tersedia");
     }
+
+    // Pindah fitur pencarian transaksi aktif dari StaffMenu ke sini
+    public Transaksi cariTransaksiAktif(String keyword) {
+        List<Transaksi> listTransaksi = transaksiRepo.findAll();
+        for (Transaksi transaksi : listTransaksi) {
+            boolean idCocok = transaksi.getIdTransaksi() != null && transaksi.getIdTransaksi().equalsIgnoreCase(keyword);
+            boolean platCocok = transaksi.getPlatNomor() != null && transaksi.getPlatNomor().equalsIgnoreCase(keyword);
+
+            if ((idCocok || platCocok) && "AKTIF".equalsIgnoreCase(transaksi.getStatus())) {
+                return transaksi;
+            }
+        }
+        return null;
+    }
 }
 

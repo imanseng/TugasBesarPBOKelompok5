@@ -288,18 +288,7 @@ public class StaffMenu {
             return;
         }
 
-        List<Transaksi> listTransaksi = transaksiService.getAllTransaksi();
-        Transaksi transaksiDitemukan = null;
-        
-        for (Transaksi transaksi : listTransaksi) {
-            boolean idCocok = transaksi.getIdTransaksi() != null && transaksi.getIdTransaksi().equalsIgnoreCase(keyword);
-            boolean platCocok = transaksi.getPlatNomor() != null && transaksi.getPlatNomor().equalsIgnoreCase(keyword);
-
-            if ((idCocok || platCocok) && "AKTIF".equalsIgnoreCase(transaksi.getStatus())) {
-                transaksiDitemukan = transaksi;
-                break;
-            }
-        }
+        Transaksi transaksiDitemukan = transaksiService.cariTransaksiAktif(keyword);
 
         if (transaksiDitemukan == null) {
             System.out.println("[GAGAL] Transaksi aktif tidak ditemukan.");
