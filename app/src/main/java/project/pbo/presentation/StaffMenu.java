@@ -11,6 +11,7 @@ import project.pbo.domain.Transaksi;
 import project.pbo.repository.KendaraanRepository;
 import project.pbo.repository.PelangganRepository;
 import project.pbo.repository.TransaksiRepository;
+import project.pbo.service.PelangganService;
 
 public class StaffMenu {
     private char pilihanMenu;
@@ -19,6 +20,7 @@ public class StaffMenu {
     private final PelangganRepository pelangganRepo = new PelangganRepository();
     private final KendaraanRepository kendaraanRepo = new KendaraanRepository();
     private final TransaksiRepository transaksiRepo = new TransaksiRepository();
+    private final PelangganService pelangganService = new PelangganService();
 
     public StaffMenu(Staff staff) {
         this.staff = staff;
@@ -81,10 +83,10 @@ public class StaffMenu {
         while (true) {
             System.out.println("Masukkan Nomor KTP: ");
             nik = input.nextLine();
-            if (!validasiNomorKtp(nik)) {
+            if (!pelangganService.validasiNomorKtp(nik)) {
                 continue;
             }
-            if (validasiDataNomorKTP(nik)) {
+            if (pelangganService.validasiDataNomorKTP(nik)) {
                 System.out.println("Pelanggan dengan KTP tersebut sudah terdaftar!");
                 continue;
             }
@@ -100,28 +102,6 @@ public class StaffMenu {
         System.out.println("[SUKSES] Data pelanggan berhasil disimpan ke JSON.");
     }
 
-    public boolean validasiNomorKtp(String nik) {
-        if (nik.trim().isEmpty()) {
-            System.out.println("Nomor KTP tidak boleh kosong!");
-            return false;
-        }
-        if (!nik.matches("\\d{16}")) {
-            System.out.println("Nomor KTP harus diisi 16 angka!");
-            return false;
-        }
-        return true;
-    }
-
-    public boolean validasiDataNomorKTP(String nik) {
-        List<Pelanggan> listPelanggan = pelangganRepo.loadAll();
-        for (Pelanggan list : listPelanggan) {
-            if (list.getNik().equals(nik)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void cariDataPelanggan() {
         Scanner input = new Scanner(System.in);
         System.out.println("=== MENU PENCARIAN PELANGGAN ===");
@@ -135,15 +115,7 @@ public class StaffMenu {
             return;
         }
 
-        List<Pelanggan> listPelanggan = pelangganRepo.loadAll();
-        Pelanggan pelangganDiTemukan = null;
-
-        for (Pelanggan pelanggan : listPelanggan) {
-            if (pelanggan.getNik().equals(nikCari)) {
-                pelangganDiTemukan = pelanggan;
-                break;
-            }
-        }
+        Pelanggan pelangganDiTemukan = pelangganService.cariByNik(nikCari);
 
         if (pelangganDiTemukan != null) {
             System.out.println("================================");
