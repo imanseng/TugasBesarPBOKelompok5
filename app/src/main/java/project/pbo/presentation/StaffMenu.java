@@ -8,18 +8,14 @@ import project.pbo.domain.Kendaraan;
 import project.pbo.domain.Pelanggan;
 import project.pbo.domain.Staff;
 import project.pbo.domain.Transaksi;
-import project.pbo.repository.KendaraanRepository;
-import project.pbo.repository.PelangganRepository;
 import project.pbo.service.KendaraanService;
 import project.pbo.service.PelangganService;
 import project.pbo.service.TransaksiService;
-import project.pbo.service.PelangganService;
 
 public class StaffMenu {
     private char pilihanMenu;
     private final Staff staff;
 
-    private final PelangganRepository pelangganRepo = new PelangganRepository();
     private final PelangganService pelangganService = new PelangganService();
     private final KendaraanService kendaraanService = new KendaraanService();
     private final TransaksiService transaksiService = new TransaksiService();
