@@ -4,13 +4,13 @@ import project.pbo.domain.Admin;
 import project.pbo.domain.Kendaraan;
 import project.pbo.domain.Mobil;
 import project.pbo.domain.Motor;
-import project.pbo.repository.KendaraanRepository;
+import project.pbo.service.KendaraanService;
 import java.util.List;
 import java.util.Scanner;
 
 public class AdminMenu {
     private char pilihanMenu;
-    private final KendaraanRepository repo = new KendaraanRepository();
+    private final KendaraanService kendaraanService = new KendaraanService();
     private final Admin admin;
 
     public AdminMenu(Admin admin) {
@@ -63,22 +63,12 @@ public class AdminMenu {
         String platNomor = "";
         double hargaSewa = 0;
 
-        List<Kendaraan> listKendaraan = repo.loadAll();
-
         while (true) {
             System.out.println("=== TAMBAH KENDARAAN ===");
             System.out.print("\nMasukkan Plat Nomor Kendaraan: ");
             platNomor = input.nextLine().trim().toUpperCase();
 
-            boolean isDuplikat = false;
-            for (Kendaraan k : listKendaraan) {
-                if (k.getPlatNomor().equalsIgnoreCase(platNomor)) {
-                    isDuplikat = true;
-                    break;
-                }
-            }
-
-            if (isDuplikat) {
+            if (kendaraanService.isPlatNomorTerdaftar(platNomor)) {
                 System.out.println("[GAGAL] Plat Nomor " + platNomor + " sudah terdaftar di sistem!");
                 continue;
             }
@@ -138,14 +128,13 @@ public class AdminMenu {
         }
 
         if (kendaraanBaru != null) {
-            listKendaraan.add(kendaraanBaru);
-            repo.saveAll(listKendaraan);
+            kendaraanService.tambahKendaraan(kendaraanBaru);
             System.out.println("[SUKSES] Data kendaraan berhasil disimpan ke json. Status default: TERSEDIA.");
         }
     }
 
     public void lihatDaftarKendaraan(){
-        List<Kendaraan> listKendaraan = repo.loadAll();
+        List<Kendaraan> listKendaraan = kendaraanService.getAllKendaraan();
         Scanner input = new Scanner(System.in);
 
         System.out.println("\n============================================================");
@@ -183,7 +172,7 @@ public class AdminMenu {
     
     public void hapusKendaraan() {
         Scanner input = new Scanner(System.in);
-        List<Kendaraan> listKendaraan = repo.loadAll();
+        List<Kendaraan> listKendaraan = kendaraanService.getAllKendaraan();
 
         System.out.println("\n========================================");
         System.out.println("         MENU HAPUS KENDARAAN           ");
@@ -210,13 +199,7 @@ public class AdminMenu {
                 continue;
             }
 
-            Kendaraan kendaraanDitemukan = null;
-            for (Kendaraan k : listKendaraan) {
-                if (k.getPlatNomor().equalsIgnoreCase(platNomor)) {
-                    kendaraanDitemukan = k;
-                    break;
-                }
-            }
+            Kendaraan kendaraanDitemukan = kendaraanService.cariKendaraanByPlat(platNomor);
 
             if (kendaraanDitemukan == null) {
                 System.out.println("[ERROR] Kendaraan dengan plat nomor " + platNomor + " tidak ditemukan di sistem!");
@@ -233,8 +216,7 @@ public class AdminMenu {
                 continue;
             }
 
-            listKendaraan.remove(kendaraanDitemukan);
-            repo.saveAll(listKendaraan);
+            kendaraanService.hapusKendaraan(kendaraanDitemukan);
             System.out.println("\n[SUKSES] Kendaraan " + platNomor + " berhasil dihapus dari sistem.");
             System.out.println("\nTekan ENTER untuk kembali ke menu utama...");
             input.nextLine();

@@ -11,6 +11,7 @@ import project.pbo.domain.Transaksi;
 import project.pbo.repository.KendaraanRepository;
 import project.pbo.repository.PelangganRepository;
 import project.pbo.repository.TransaksiRepository;
+import project.pbo.service.KendaraanService;
 import project.pbo.service.PelangganService;
 
 public class StaffMenu {
@@ -18,9 +19,9 @@ public class StaffMenu {
     private final Staff staff;
 
     private final PelangganRepository pelangganRepo = new PelangganRepository();
-    private final KendaraanRepository kendaraanRepo = new KendaraanRepository();
     private final TransaksiRepository transaksiRepo = new TransaksiRepository();
     private final PelangganService pelangganService = new PelangganService();
+    private final KendaraanService kendaraanService = new KendaraanService();
 
     public StaffMenu(Staff staff) {
         this.staff = staff;
@@ -136,15 +137,8 @@ public class StaffMenu {
     public void cekKendaraanTersedia() {
         Scanner input = new Scanner(System.in);
 
-        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
         System.out.println("=== DAFTAR KENDARAAN YANG TERSEDIA ===");
-        List<Kendaraan> listKendaraanTersedia = new ArrayList<>();
-
-        for (Kendaraan kendaraan : listKendaraan) {
-            if (kendaraan.getStatus().equalsIgnoreCase("Tersedia")) {
-                listKendaraanTersedia.add(kendaraan);
-            }
-        }
+        List<Kendaraan> listKendaraanTersedia = kendaraanService.getKendaraanTersedia();
 
         if (listKendaraanTersedia.isEmpty()) {
             System.out.println("Tidak ada kendaraan yang tersedia saat ini.");
@@ -193,20 +187,11 @@ public class StaffMenu {
             return;
         }
 
-        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
-        Kendaraan kendaraanDitemukan = null;
+        Kendaraan kendaraanDitemukan = kendaraanService.cariKendaraanByPlat(platNomorInput);
 
-        for (int i = 0; i < listKendaraan.size(); i++) {
-            Kendaraan k = listKendaraan.get(i);
-            if (k.getPlatNomor().equalsIgnoreCase(platNomorInput)) {
-                if (k.getStatus().equalsIgnoreCase("TERSEDIA")) {
-                    kendaraanDitemukan = k;
-                } else {
-                    System.out.println("[GAGAL] Kendaraan sedang disewa!");
-                    return;
-                }
-                break;
-            }
+        if (kendaraanDitemukan != null && !kendaraanDitemukan.getStatus().equalsIgnoreCase("TERSEDIA")) {
+            System.out.println("[GAGAL] Kendaraan sedang disewa!");
+            return;
         }
 
         if (kendaraanDitemukan == null) {
@@ -284,10 +269,8 @@ public class StaffMenu {
 
         Transaksi transaksiBaru = new Transaksi(idTransaksi, nikInput, platNomorInput, durasi, totalBayar, "AKTIF", isDelivery, zonaKirim);
 
-        kendaraanDitemukan.setStatus("SEDANG DISEWA");
-
         transaksiRepo.tambah(transaksiBaru);
-        kendaraanRepo.saveAll(listKendaraan);
+        kendaraanService.updateStatusKendaraan(kendaraanDitemukan, "SEDANG DISEWA");
 
         System.out.println("\nMemproses transaksi...");
         transaksiBaru.tampilkanStruk(pelangganDitemukan.getNamaPelanggan(), kendaraanDitemukan.getJenisKendaraan());
@@ -348,14 +331,7 @@ public class StaffMenu {
             return;
         }
 
-        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
-        Kendaraan kendaraanDitemukan = null;
-        for (Kendaraan kendaraan : listKendaraan) {
-            if (kendaraan.getPlatNomor().equalsIgnoreCase(transaksiDitemukan.getPlatNomor())) {
-                kendaraanDitemukan = kendaraan;
-                break;
-            }
-        }
+        Kendaraan kendaraanDitemukan = kendaraanService.cariKendaraanByPlat(transaksiDitemukan.getPlatNomor());
 
         if (kendaraanDitemukan == null) {
             System.out.println("[GAGAL] Data kendaraan untuk transaksi ini tidak ditemukan.");
@@ -398,10 +374,8 @@ public class StaffMenu {
 
         transaksiDitemukan.setTotalBayar(totalBayar);
         transaksiDitemukan.setStatus("SELESAI");
-        kendaraanDitemukan.setStatus("Tersedia");
-
         transaksiRepo.saveAll(listTransaksi);
-        kendaraanRepo.saveAll(listKendaraan);
+        kendaraanService.updateStatusKendaraan(kendaraanDitemukan, "Tersedia");
 
         System.out.println("\n=== STRUK TAGIHAN AKHIR ===");
         System.out.println("ID Transaksi       : " + transaksiDitemukan.getIdTransaksi());
