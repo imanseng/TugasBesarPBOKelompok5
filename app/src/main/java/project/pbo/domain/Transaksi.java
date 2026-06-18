@@ -15,8 +15,10 @@ public class Transaksi {
     }
 
     // parametrized constructor
-    // IMAN - Perbaikan konstruktor sesuai dengan kebutuhan kelompok (penambahan isDelivery dan zonaKirim)
-    public Transaksi(String id, String nik, String plat, int durasi, double total, String status, boolean isDelivery, String zonaKirim) {
+    // IMAN - Perbaikan konstruktor sesuai dengan kebutuhan kelompok (penambahan
+    // isDelivery dan zonaKirim)
+    public Transaksi(String id, String nik, String plat, int durasi, double total, String status, boolean isDelivery,
+            String zonaKirim) {
         this.idTransaksi = id;
         this.nikPelanggan = nik;
         this.platNomor = plat;
@@ -24,7 +26,7 @@ public class Transaksi {
         this.totalBayar = total;
         this.status = status;
         this.isDelivery = isDelivery; // Kelompok 5
-        this.zonaKirim = zonaKirim;   // Kelompok 5
+        this.zonaKirim = zonaKirim; // Kelompok 5
     }
 
     // getters and setters

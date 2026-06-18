@@ -15,7 +15,8 @@ public class Mobil extends Kendaraan {
         return jumlahPintu;
     }
 
-    //Adit (feat/return-logic) : diubah ini agar sesuai dengan aturan denda (Mobil 50k/hari & Motor 20k/hari)
+    // Adit (feat/return-logic) : diubah ini agar sesuai dengan aturan denda (Mobil
+    // 50k/hari & Motor 20k/hari)
     @Override
     public double hitungDenda(int hariTerlambat) {
         if (hariTerlambat <= 0) {
@@ -45,5 +46,4 @@ public class Mobil extends Kendaraan {
         super.tampilkanInfo(); // Mencetak Plat, Merk, Harga, Status dari kelas induk
         System.out.println("Jumlah Pintu: " + this.jumlahPintu + " Pintu");
     }
-
 }

@@ -12,20 +12,20 @@ public class Pengguna {
         this.role = role;
     }
 
-    public String getUsername (){
+    public String getUsername() {
         return username;
     }
 
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
 
-    public String getRole (){
+    public String getRole() {
         return role;
     }
 
     // IMAN - Menambah Method cekLogin, apakah username dan password sesuai
-    public boolean cekLogin (String username, String password) {
+    public boolean cekLogin(String username, String password) {
         if (this.username.equals(username) && this.password.equals(password)) {
             return true;
         } else {
