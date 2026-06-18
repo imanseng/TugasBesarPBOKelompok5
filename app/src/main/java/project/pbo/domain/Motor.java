@@ -14,7 +14,8 @@ public class Motor extends Kendaraan {
         return jenisTransmisi;
     }
 
-    //Adit (feat/return-logic) : diubah ini agar sesuai dengan aturan denda (Mobil 50k/hari & Motor 20k/hari)
+    // Adit (feat/return-logic) : diubah ini agar sesuai dengan aturan denda (Mobil
+    // 50k/hari & Motor 20k/hari)
     @Override
     public double hitungDenda(int hariTerlambat) {
         if (hariTerlambat <= 0) {
@@ -29,7 +30,7 @@ public class Motor extends Kendaraan {
         while (true) {
             System.out.print("Masukkan Info Tambahan (Manual/Matic): ");
             String transmisi = scanner.nextLine().trim();
-            
+
             // Validasi input (Abaikan huruf besar/kecil)
             if (transmisi.equalsIgnoreCase("Manual") || transmisi.equalsIgnoreCase("Matic")) {
                 // Format agar huruf pertama kapital (contoh: "Matic")
