@@ -48,4 +48,6 @@ tasks.named('test') {
 tasks.named('run') {
     // Allow user input during gradle run
     standardInput = System.in
+    // Set working directory to project root so 'app/data/...' paths work
+    workingDir = rootProject.projectDir
 }
