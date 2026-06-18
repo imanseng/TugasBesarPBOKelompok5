@@ -89,10 +89,25 @@ public class StaffMenu {
             }
             break;
         }
-        System.out.println("Masukkan Nama Lengkap: ");
-        namaPelanggan = input.nextLine();
-        System.out.println("Masukkan No Telepon: ");
-        noTelp = input.nextLine();
+        while (true) {
+            System.out.println("Masukkan Nama Lengkap: ");
+            namaPelanggan = input.nextLine();
+            if (namaPelanggan.matches("^[a-zA-Z\\s]+$")) {
+                break;
+            } else {
+                System.out.println("[PERINGATAN] Nama lengkap hanya boleh berisi huruf!");
+            }
+        }
+
+        while (true) {
+            System.out.println("Masukkan No Telepon: ");
+            noTelp = input.nextLine();
+            if (noTelp.matches("^[0-9]+$")) {
+                break;
+            } else {
+                System.out.println("[PERINGATAN] Nomor telepon hanya boleh berisi angka!");
+            }
+        }
 
         pelangganService.tambahPelanggan(nik, namaPelanggan, noTelp);
         System.out.println("[SUKSES] Data pelanggan berhasil disimpan ke JSON.");
