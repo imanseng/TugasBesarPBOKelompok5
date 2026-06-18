@@ -44,3 +44,8 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+tasks.named('run') {
+    // Allow user input during gradle run
+    standardInput = System.in
+}
