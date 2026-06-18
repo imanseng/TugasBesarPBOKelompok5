@@ -35,11 +35,13 @@ public class TransaksiService {
     }
 
     // Pindah fitur buat transaksi peminjaman dari StaffMenu ke sini
-    public Transaksi prosesPeminjaman(String nikPelanggan, Kendaraan kendaraan, int durasi, boolean isDelivery, String zonaKirim, double biayaKirim) {
+    public Transaksi prosesPeminjaman(String nikPelanggan, Kendaraan kendaraan, int durasi, boolean isDelivery,
+            String zonaKirim, double biayaKirim) {
         double totalBayar = (durasi * kendaraan.getHargaSewaPerHari()) + biayaKirim;
         String idTransaksi = generateIdTransaksi();
 
-        Transaksi transaksiBaru = new Transaksi(idTransaksi, nikPelanggan, kendaraan.getPlatNomor(), durasi, totalBayar, "AKTIF", isDelivery, zonaKirim);
+        Transaksi transaksiBaru = new Transaksi(idTransaksi, nikPelanggan, kendaraan.getPlatNomor(), durasi, totalBayar,
+                "AKTIF", isDelivery, zonaKirim);
 
         transaksiRepo.tambah(transaksiBaru);
         kendaraanService.updateStatusKendaraan(kendaraan, "SEDANG DISEWA");
@@ -55,9 +57,12 @@ public class TransaksiService {
     public double hitungBiayaKirim(Transaksi transaksi) {
         if (transaksi.isDelivery()) {
             String zonaKirim = transaksi.getZonaKirim();
-            if ("A".equalsIgnoreCase(zonaKirim)) return 150000;
-            else if ("B".equalsIgnoreCase(zonaKirim)) return 100000;
-            else if ("C".equalsIgnoreCase(zonaKirim)) return 50000;
+            if ("A".equalsIgnoreCase(zonaKirim))
+                return 150000;
+            else if ("B".equalsIgnoreCase(zonaKirim))
+                return 100000;
+            else if ("C".equalsIgnoreCase(zonaKirim))
+                return 50000;
         }
         return 0;
     }
@@ -75,7 +80,7 @@ public class TransaksiService {
 
         transaksi.setTotalBayar(totalBayar);
         transaksi.setStatus("SELESAI");
-        
+
         kendaraanService.updateStatusKendaraan(kendaraan, "Tersedia");
     }
 
@@ -83,7 +88,8 @@ public class TransaksiService {
     public Transaksi cariTransaksiAktif(String keyword) {
         List<Transaksi> listTransaksi = transaksiRepo.findAll();
         for (Transaksi transaksi : listTransaksi) {
-            boolean idCocok = transaksi.getIdTransaksi() != null && transaksi.getIdTransaksi().equalsIgnoreCase(keyword);
+            boolean idCocok = transaksi.getIdTransaksi() != null
+                    && transaksi.getIdTransaksi().equalsIgnoreCase(keyword);
             boolean platCocok = transaksi.getPlatNomor() != null && transaksi.getPlatNomor().equalsIgnoreCase(keyword);
 
             if ((idCocok || platCocok) && "AKTIF".equalsIgnoreCase(transaksi.getStatus())) {
@@ -93,4 +99,3 @@ public class TransaksiService {
         return null;
     }
 }
-
