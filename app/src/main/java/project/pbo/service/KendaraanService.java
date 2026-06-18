@@ -73,4 +73,3 @@ public class KendaraanService {
         kendaraanRepo.saveAll(listKendaraan);
     }
 }
-
