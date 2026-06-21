@@ -7,3 +7,6 @@ build
 # Ignore bin
 app/bin/
 
+# Abaikan konfigurasi kredensial database
+app/src/main/resources/application.properties
+
