@@ -1,56 +1,60 @@
 package project.pbo.repository;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import project.pbo.domain.Pelanggan;
+import project.pbo.infrastructure.database.DatabaseConnection;
 
-import java.io.*;
-import java.lang.reflect.Type;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PelangganRepository {
-    private static final String FILE_PATH = "app/data/pelanggan.json";
-    private final Gson gson;
+    private final DatabaseConnection databaseConnection;
 
-    public PelangganRepository() {
-        // Build Gson dengan format cetak rapi (Pretty Printing)
-        this.gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
+    public PelangganRepository(DatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
     }
 
-    // Fungsi untuk membaca (LOAD) seluruh data pelanggan
+    // Membaca seluruh data langsung dari PostgreSQL
     public List<Pelanggan> loadAll() {
-        File file = new File(FILE_PATH);
-        if (!file.exists()) {
-            return new ArrayList<>(); // Kembalikan list kosong jika file belum ada
+        List<Pelanggan> pelangganList = new ArrayList<>();
+        String sql = "SELECT * FROM pelanggan";
+        
+        //Membuka koneksi, mempersiapkan statement SQL, dan mengeksekusi query
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+             
+            while (rs.next()) {
+                Pelanggan pelanggan = new Pelanggan(
+                    rs.getString("nik"),
+                    rs.getString("nama_pelanggan"),
+                    rs.getString("no_telp")
+                );
+                pelangganList.add(pelanggan);
+            }
+        } catch (SQLException e) {
+            System.out.println("[ERROR] Gagal membaca data pelanggan: " + e.getMessage());
         }
-
-        try (Reader reader = new FileReader(file)) {
-            Type listType = new TypeToken<ArrayList<Pelanggan>>(){}.getType();
-            List<Pelanggan> data = gson.fromJson(reader, listType);
-            return data != null ? data : new ArrayList<>();
-        } catch (IOException e) {
-            System.out.println("[ERROR] Gagal membaca file database pelanggan.");
-            return new ArrayList<>();
-        }
+        return pelangganList;
     }
 
-    // Fungsi untuk menyimpan (SAVE) satu pelanggan baru
+    // Melakukan INSERT langsung ke tabel PostgreSQL
     public void save(Pelanggan baru) {
-        List<Pelanggan> list = loadAll();
-        list.add(baru);
-        saveAll(list);
-    }
-
-    // Fungsi internal untuk menulis seluruh list ke file JSON
-    private void saveAll(List<Pelanggan> list) {
-        try (Writer writer = new FileWriter(FILE_PATH)) {
-            gson.toJson(list, writer);
-        } catch (IOException e) {
-            System.out.println("[ERROR] Gagal menyimpan data pelanggan ke JSON.");
+        String sql = "INSERT INTO pelanggan (nik, nama_pelanggan, no_telp) VALUES (?, ?, ?)";
+        
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             
+            stmt.setString(1, baru.getNik());
+            stmt.setString(2, baru.getNamaPelanggan());
+            stmt.setString(3, baru.getNoTelp());
+            stmt.executeUpdate();
+            
+        } catch (SQLException e) {
+            System.out.println("[ERROR] Gagal menyimpan data pelanggan: " + e.getMessage());
         }
     }
 }
