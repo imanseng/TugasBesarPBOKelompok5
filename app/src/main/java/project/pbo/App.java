@@ -2,20 +2,41 @@ package project.pbo;
 
 import project.pbo.domain.Admin;
 import project.pbo.domain.Staff;
+import project.pbo.infrastructure.database.DatabaseConnection;
+import project.pbo.infrastructure.database.PostgreSqlDatabaseConnection;
 import project.pbo.domain.Owner;
 import project.pbo.domain.Pengguna;
 import project.pbo.service.AuthService;
 import project.pbo.presentation.AdminMenu;
 import project.pbo.presentation.StaffMenu;
+import project.pbo.repository.PenggunaRepository;
 import project.pbo.presentation.OwnerMenu;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class App {
     private static final Scanner input = new Scanner(System.in);
-    private static final AuthService authService = new AuthService();
+    private static final DatabaseConnection databaseConnection =
+        new PostgreSqlDatabaseConnection();
+
+    private static final AuthService authService =
+        new AuthService(new PenggunaRepository(databaseConnection));
 
     public static void main(String[] args) {
+
+        // //koneksi sementara
+        // DatabaseConnection databaseConnection = new PostgreSqlDatabaseConnection();
+
+        try (Connection connection = databaseConnection.connect()) {
+            System.out.println("[SUKSES] Terhubung ke PostgreSQL.");
+        } catch (SQLException e) {
+            System.out.println("[GAGAL] Koneksi PostgreSQL: " + e.getMessage());
+            return;
+        }
+
+
         // Alur berputar terus: Setelah logout otomatis kembali ke gerbang login awal (Monic)
         while (true) {
             prosesOtentikasiSistem();
