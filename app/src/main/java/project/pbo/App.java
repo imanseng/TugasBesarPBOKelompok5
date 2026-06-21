@@ -18,16 +18,15 @@ import java.util.Scanner;
 
 public class App {
     private static final Scanner input = new Scanner(System.in);
+    // Inisialisasi antarmuka koneksi utama ke database PostgreSQL
     private static final DatabaseConnection databaseConnection =
         new PostgreSqlDatabaseConnection();
 
+    //Penerapan Dependency Injection: Koneksi DB ke PenggunaRepository dan meneruskannya ke AuthService
     private static final AuthService authService =
         new AuthService(new PenggunaRepository(databaseConnection));
 
     public static void main(String[] args) {
-
-        // //koneksi sementara
-        // DatabaseConnection databaseConnection = new PostgreSqlDatabaseConnection();
 
         try (Connection connection = databaseConnection.connect()) {
             System.out.println("[SUKSES] Terhubung ke PostgreSQL.");

@@ -6,9 +6,11 @@ import java.sql.SQLException;
 
 import project.pbo.infrastructure.config.Config;
 
+// Mengimplementasikan interface DatabaseConnection untuk koneksi PostgreSQL
 public class PostgreSqlDatabaseConnection implements DatabaseConnection {
     @Override
     public Connection connect() throws SQLException {
+        // mengambil URL database dari file Config.java
         String url = Config.get(
                 "db.url",
                 "jdbc:postgresql://localhost:5432/rental_db"
