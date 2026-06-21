@@ -19,7 +19,7 @@ public class PelangganService {
     }
 
     public boolean validasiDataNomorKTP(String nik) {
-        List<Pelanggan> listPelanggan = pelangganRepo.loadAll();
+        List<Pelanggan> listPelanggan = pelangganRepo.getAll();
         for (Pelanggan list : listPelanggan) {
             if (list.getNik().equals(nik)) {
                 return true;
@@ -29,7 +29,7 @@ public class PelangganService {
     }
 
     public Pelanggan cariByNik(String nik) {
-        List<Pelanggan> listPelanggan = pelangganRepo.loadAll();
+        List<Pelanggan> listPelanggan = pelangganRepo.getAll();
         for (Pelanggan pelanggan : listPelanggan) {
             if (pelanggan.getNik().equals(nik)) {
                 return pelanggan;

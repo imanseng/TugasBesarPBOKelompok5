@@ -9,15 +9,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import project.pbo.repository.interfaces.ModifiableRepository;
+import project.pbo.repository.interfaces.ReadableRepository;
+import project.pbo.repository.interfaces.WritableRepository;
 
-public class TransaksiRepository {
+public class TransaksiRepository implements ReadableRepository<Transaksi>, WritableRepository<Transaksi>, ModifiableRepository<Transaksi, String> {
     private final DatabaseConnection databaseConnection;
 
     public TransaksiRepository(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
 
-    public List<Transaksi> findAll() {
+    @Override
+    public List<Transaksi> getAll() {
         List<Transaksi> transaksiList = new ArrayList<>();
         String sql = "SELECT * FROM transaksi";
 
@@ -48,7 +52,8 @@ public class TransaksiRepository {
         return transaksiList;
     }
 
-    public void tambah(Transaksi transaksi) {
+    @Override
+    public void save(Transaksi transaksi) {
         String sql = "INSERT INTO transaksi (id_transaksi, nik_pelanggan, plat_nomor, durasi_hari, total_bayar, status, is_delivery, zona_kirim) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = databaseConnection.connect();
@@ -75,6 +80,7 @@ public class TransaksiRepository {
     }
 
     // Fungsi tambahan untuk memperbarui total bayar & status saat pengembalian
+    @Override
     public void update(Transaksi transaksi) {
         String sql = "UPDATE transaksi SET total_bayar = ?, status = ? WHERE id_transaksi = ?";
         try (Connection conn = databaseConnection.connect();
@@ -87,5 +93,10 @@ public class TransaksiRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Gagal mengupdate data transaksi", e);
         }
+    }
+
+    @Override
+    public void delete(String id) {
+        throw new UnsupportedOperationException("Transaksi tidak boleh dihapus demi audit log.");
     }
 }

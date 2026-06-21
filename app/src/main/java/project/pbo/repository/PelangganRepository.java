@@ -9,8 +9,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import project.pbo.repository.interfaces.ReadableRepository;
+import project.pbo.repository.interfaces.WritableRepository;
 
-public class PelangganRepository {
+public class PelangganRepository implements ReadableRepository<Pelanggan>, WritableRepository<Pelanggan> {
     private final DatabaseConnection databaseConnection;
 
     public PelangganRepository(DatabaseConnection databaseConnection) {
@@ -18,7 +20,8 @@ public class PelangganRepository {
     }
 
     // Membaca seluruh data langsung dari PostgreSQL
-    public List<Pelanggan> loadAll() {
+    @Override
+    public List<Pelanggan> getAll() {
         List<Pelanggan> pelangganList = new ArrayList<>();
         String sql = "SELECT * FROM pelanggan";
         
@@ -42,6 +45,7 @@ public class PelangganRepository {
     }
 
     // Melakukan INSERT langsung ke tabel PostgreSQL
+    @Override
     public void save(Pelanggan baru) {
         String sql = "INSERT INTO pelanggan (nik, nama_pelanggan, no_telp) VALUES (?, ?, ?)";
         

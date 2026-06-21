@@ -11,7 +11,7 @@ public class KendaraanService {
     private final KendaraanRepository kendaraanRepo = new KendaraanRepository(new PostgreSqlDatabaseConnection());
 
     public List<Kendaraan> getKendaraanTersedia() {
-        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
+        List<Kendaraan> listKendaraan = kendaraanRepo.getAll();
         List<Kendaraan> listKendaraanTersedia = new ArrayList<>();
 
         for (Kendaraan kendaraan : listKendaraan) {
@@ -23,7 +23,7 @@ public class KendaraanService {
     }
 
     public boolean isPlatNomorTerdaftar(String platNomor) {
-        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
+        List<Kendaraan> listKendaraan = kendaraanRepo.getAll();
         for (Kendaraan k : listKendaraan) {
             if (k.getPlatNomor().equalsIgnoreCase(platNomor)) {
                 return true;
@@ -38,7 +38,7 @@ public class KendaraanService {
     }
 
     public Kendaraan cariKendaraanByPlat(String platNomor) {
-        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
+        List<Kendaraan> listKendaraan = kendaraanRepo.getAll();
         for (Kendaraan k : listKendaraan) {
             if (k.getPlatNomor().equalsIgnoreCase(platNomor)) {
                 return k;
@@ -53,7 +53,7 @@ public class KendaraanService {
     }
 
     public List<Kendaraan> getAllKendaraan() {
-        return kendaraanRepo.loadAll();
+        return kendaraanRepo.getAll();
     }
 
     // Panggil perintah UPDATE SQL yang dibuat

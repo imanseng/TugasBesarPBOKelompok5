@@ -11,15 +11,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import project.pbo.repository.interfaces.ModifiableRepository;
+import project.pbo.repository.interfaces.ReadableRepository;
+import project.pbo.repository.interfaces.WritableRepository;
 
-public class KendaraanRepository {
+public class KendaraanRepository implements ReadableRepository<Kendaraan>, WritableRepository<Kendaraan>, ModifiableRepository<Kendaraan, String> {
     private final DatabaseConnection databaseConnection;
 
     public KendaraanRepository(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
     }
 
-    public List<Kendaraan> loadAll() {
+    @Override
+    public List<Kendaraan> getAll() {
         List<Kendaraan> kendaraanList = new ArrayList<>();
         String sql = "SELECT * FROM kendaraan";
         
@@ -51,6 +55,7 @@ public class KendaraanRepository {
         return kendaraanList;
     }
 
+    @Override
     public void save(Kendaraan kendaraan) {
         String sql = "INSERT INTO kendaraan (plat_nomor, harga_sewa_per_hari, jenis_kendaraan, status, jumlah_pintu, jenis_transmisi) VALUES (?, ?, ?, ?, ?, ?)";
         
@@ -93,6 +98,13 @@ public class KendaraanRepository {
         }
     }
 
+    @Override
+    public void update(Kendaraan kendaraan) {
+        // Implementasi default untuk ModifiableRepository
+        updateStatus(kendaraan.getPlatNomor(), kendaraan.getStatus());
+    }
+
+    @Override
     public void delete(String platNomor) {
         String sql = "DELETE FROM kendaraan WHERE plat_nomor = ?";
         try (Connection conn = databaseConnection.connect();

@@ -23,7 +23,7 @@ public class TransaksiService {
     }
 
     public String generateIdTransaksi() {
-        List<Transaksi> listTransaksi = transaksiRepo.findAll();
+        List<Transaksi> listTransaksi = transaksiRepo.getAll();
         int maxNum = 0;
 
         for (Transaksi t : listTransaksi) {
@@ -50,7 +50,7 @@ public class TransaksiService {
                 "AKTIF", isDelivery, zonaKirim);
 
         // Melakukan INSERT transaksi baru ke database dan UPDATE status kendaraan menjadi "SEDANG DISEWA"
-        transaksiRepo.tambah(transaksiBaru);
+        transaksiRepo.save(transaksiBaru);
         kendaraanService.updateStatusKendaraan(kendaraan, "SEDANG DISEWA");
 
         return transaksiBaru;
@@ -82,7 +82,7 @@ public class TransaksiService {
     }
 
     public Transaksi cariTransaksiAktif(String keyword) {
-        List<Transaksi> listTransaksi = transaksiRepo.findAll();
+        List<Transaksi> listTransaksi = transaksiRepo.getAll();
         for (Transaksi transaksi : listTransaksi) {
             boolean idCocok = transaksi.getIdTransaksi() != null
                     && transaksi.getIdTransaksi().equalsIgnoreCase(keyword);

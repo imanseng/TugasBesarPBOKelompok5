@@ -16,7 +16,7 @@ public class LaporanService {
     }
 
     public double hitungTotalPendapatan() {
-        List<Transaksi> transaksiList = transaksiRepository.findAll();
+        List<Transaksi> transaksiList = transaksiRepository.getAll();
         double totalPendapatan = 0;
 
         for (Transaksi transaksi : transaksiList) {
@@ -29,6 +29,6 @@ public class LaporanService {
     }
 
     public List<Transaksi> getRiwayatTransaksi() {
-        return transaksiRepository.findAll();
+        return transaksiRepository.getAll();
     }
 }
