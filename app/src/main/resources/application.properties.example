@@ -1,0 +1,3 @@
+db.url=jdbc:postgresql://localhost:5432/nama_db_nya
+db.username=ganti_ke_username_db_diri
+db.password=ganti_ke_password_db_diri

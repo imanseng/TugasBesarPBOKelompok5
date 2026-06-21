@@ -1,70 +1,92 @@
 package project.pbo.repository;
-import com.google.gson.Gson;//untuk penggunaan Gson
-import java.util.List;//import List
 
-import project.pbo.domain.Transaksi;//import class "Transaksi" dari "Transaksi.java"
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import project.pbo.domain.Transaksi;
+import project.pbo.infrastructure.database.DatabaseConnection;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-//Logika Gson (tugas = Java object ke JSON, dan sebaliknya)
 public class TransaksiRepository {
-    private static final String FILE_PATH = "app/data/transaksi.json";
+    private final DatabaseConnection databaseConnection;
 
-    private final Gson gson;
-
-    public TransaksiRepository() {
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
+    public TransaksiRepository(DatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
     }
 
     public List<Transaksi> findAll() {
-        File file = new File(FILE_PATH);
-
-        if (!file.exists() || file.length() == 0) {
-            return new ArrayList<>();
-        }
-
-        try (FileReader reader = new FileReader(file)) {
-            Type listType = new TypeToken<List<Transaksi>>() {}.getType();
-            List<Transaksi> transaksiList = gson.fromJson(reader, listType);
-
-            if (transaksiList == null) {
-                return new ArrayList<>();
+        List<Transaksi> transaksiList = new ArrayList<>();
+        String sql = "SELECT * FROM transaksi";
+        
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+             
+            while (rs.next()) {
+                String zonaKirim = rs.getString("zona_kirim");
+                if (rs.wasNull()) {
+                    zonaKirim = "-"; 
+                }
+                
+                Transaksi t = new Transaksi(
+                    rs.getString("id_transaksi"),
+                    rs.getString("nik_pelanggan"),
+                    rs.getString("plat_nomor"),
+                    rs.getInt("durasi_hari"),
+                    rs.getDouble("total_bayar"),
+                    rs.getString("status"),
+                    rs.getBoolean("is_delivery"),
+                    zonaKirim
+                );
+                transaksiList.add(t);
             }
-
-            return transaksiList;
-        } catch (IOException e) {
-            throw new RuntimeException("Gagal membaca data transaksi", e);
+        } catch (SQLException e) {
+            System.out.println("[ERROR] Gagal membaca data transaksi: " + e.getMessage());
         }
-    }
-
-    public void saveAll(List<Transaksi> transaksiList) {
-        File file = new File(FILE_PATH);
-        File parentFolder = file.getParentFile();
-
-        if (parentFolder != null && !parentFolder.exists()) {
-            parentFolder.mkdirs();
-        }
-
-        try (FileWriter writer = new FileWriter(file)) {
-            gson.toJson(transaksiList, writer);
-        } catch (IOException e) {
-            throw new RuntimeException("Gagal menyimpan data transaksi", e);
-        }
+        return transaksiList;
     }
 
     public void tambah(Transaksi transaksi) {
-        List<Transaksi> transaksiList = findAll();
-        transaksiList.add(transaksi);
-        saveAll(transaksiList);
+        String sql = "INSERT INTO transaksi (id_transaksi, nik_pelanggan, plat_nomor, durasi_hari, total_bayar, status, is_delivery, zona_kirim) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             
+            stmt.setString(1, transaksi.getIdTransaksi());
+            stmt.setString(2, transaksi.getNikPelanggan());
+            stmt.setString(3, transaksi.getPlatNomor());
+            stmt.setInt(4, transaksi.getDurasiHari());
+            stmt.setDouble(5, transaksi.getTotalBayar());
+            stmt.setString(6, transaksi.getStatus());
+            stmt.setBoolean(7, transaksi.isDelivery());
+            
+            if (transaksi.getZonaKirim() == null || transaksi.getZonaKirim().equals("-")) {
+                stmt.setNull(8, java.sql.Types.VARCHAR);
+            } else {
+                stmt.setString(8, transaksi.getZonaKirim());
+            }
+            
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("[ERROR] Gagal menyimpan data transaksi: " + e.getMessage());
+        }
+    }
+
+    // Fungsi tambahan untuk memperbarui total bayar & status saat pengembalian
+    public void update(Transaksi transaksi) {
+        String sql = "UPDATE transaksi SET total_bayar = ?, status = ? WHERE id_transaksi = ?";
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             
+            stmt.setDouble(1, transaksi.getTotalBayar());
+            stmt.setString(2, transaksi.getStatus());
+            stmt.setString(3, transaksi.getIdTransaksi());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("[ERROR] Gagal mengupdate data transaksi: " + e.getMessage());
+        }
     }
 }

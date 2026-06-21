@@ -1,13 +1,13 @@
 package project.pbo.service;
 
 import java.util.List;
-
 import project.pbo.domain.Pelanggan;
 import project.pbo.repository.PelangganRepository;
+import project.pbo.infrastructure.database.PostgreSqlDatabaseConnection;
 
 public class PelangganService {
-    // Pindah fitur validasiNomorKtp dan validasiDataNomorKTP dari StaffMenu ke sini
-    private final PelangganRepository pelangganRepo = new PelangganRepository();
+    // Membuat objek repository pelanggan secara langsung dan terisolasi dengan koneksi PostgreSQL
+    private final PelangganRepository pelangganRepo = new PelangganRepository(new PostgreSqlDatabaseConnection());
 
     public boolean validasiNomorKtp(String nik) {
         if (nik.trim().isEmpty()) {
@@ -31,7 +31,6 @@ public class PelangganService {
         return false;
     }
 
-    // Pindah fitur cari pelanggan (cariByNik) dari StaffMenu ke sini
     public Pelanggan cariByNik(String nik) {
         List<Pelanggan> listPelanggan = pelangganRepo.loadAll();
         for (Pelanggan pelanggan : listPelanggan) {
@@ -42,7 +41,6 @@ public class PelangganService {
         return null;
     }
 
-    // Pindah fitur simpan pelanggan dari StaffMenu ke sini
     public void tambahPelanggan(String nik, String namaPelanggan, String noTelp) {
         Pelanggan pelangganBaru = new Pelanggan(nik, namaPelanggan, noTelp);
         pelangganRepo.save(pelangganBaru);

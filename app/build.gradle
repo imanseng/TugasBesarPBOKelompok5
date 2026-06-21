@@ -24,8 +24,8 @@ dependencies {
     // This dependency is used by the application.
     implementation libs.guava
 
-    //Ini gson nya (udah di setup)
-    implementation 'com.google.code.gson:gson:2.10.1'
+    // Database Dependencies
+    implementation 'org.postgresql:postgresql:42.7.11'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
