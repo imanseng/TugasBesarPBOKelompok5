@@ -34,32 +34,16 @@ public class Transaksi {
         return idTransaksi;
     }
 
-    public void setIdTransaksi(String idTransaksi) {
-        this.idTransaksi = idTransaksi;
-    }
-
     public String getNikPelanggan() {
         return nikPelanggan;
-    }
-
-    public void setNikPelanggan(String nikPelanggan) {
-        this.nikPelanggan = nikPelanggan;
     }
 
     public String getPlatNomor() {
         return platNomor;
     }
 
-    public void setPlatNomor(String platNomor) {
-        this.platNomor = platNomor;
-    }
-
     public int getDurasiHari() {
         return durasiHari;
-    }
-
-    public void setDurasiHari(int durasiHari) {
-        this.durasiHari = durasiHari;
     }
 
     public double getTotalBayar() {
@@ -82,16 +66,8 @@ public class Transaksi {
         return isDelivery;
     }
 
-    public void setDelivery(boolean delivery) {
-        isDelivery = delivery;
-    }
-
     public String getZonaKirim() {
         return zonaKirim;
-    }
-
-    public void setZonaKirim(String zonaKirim) {
-        this.zonaKirim = zonaKirim;
     }
 
     // Method tampilkan struk peminjaman

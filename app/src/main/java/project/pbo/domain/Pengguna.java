@@ -23,13 +23,4 @@ public class Pengguna {
     public String getRole() {
         return role;
     }
-
-    // IMAN - Menambah Method cekLogin, apakah username dan password sesuai
-    public boolean cekLogin(String username, String password) {
-        if (this.username.equals(username) && this.password.equals(password)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
