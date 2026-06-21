@@ -10,10 +10,6 @@ public class Transaksi {
     private boolean isDelivery;
     private String zonaKirim;
 
-    // default constructor
-    public Transaksi() {
-    }
-
     // parametrized constructor
     // IMAN - Perbaikan konstruktor sesuai dengan kebutuhan kelompok (penambahan
     // isDelivery dan zonaKirim)

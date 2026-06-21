@@ -10,12 +10,9 @@ public class LaporanService {
     private final TransaksiRepository transaksiRepository;
 
     public LaporanService() {
-        // Membuat objek repository transaksi secara langsung dan terisolasi dengan koneksi PostgreSQL
+        // Membuat objek repository transaksi secara langsung dan terisolasi dengan
+        // koneksi PostgreSQL
         this.transaksiRepository = new TransaksiRepository(new PostgreSqlDatabaseConnection());
-    }
-
-    public LaporanService(TransaksiRepository transaksiRepository) {
-        this.transaksiRepository = transaksiRepository;
     }
 
     public double hitungTotalPendapatan() {
