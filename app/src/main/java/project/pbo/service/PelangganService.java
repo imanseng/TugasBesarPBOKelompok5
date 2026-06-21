@@ -3,11 +3,14 @@ package project.pbo.service;
 import java.util.List;
 import project.pbo.domain.Pelanggan;
 import project.pbo.repository.PelangganRepository;
-import project.pbo.infrastructure.database.PostgreSqlDatabaseConnection;
+
 
 public class PelangganService {
-    // Membuat objek repository pelanggan secara langsung dan terisolasi dengan koneksi PostgreSQL
-    private final PelangganRepository pelangganRepo = new PelangganRepository(new PostgreSqlDatabaseConnection());
+    private final PelangganRepository pelangganRepo;
+
+    public PelangganService(PelangganRepository pelangganRepo) {
+        this.pelangganRepo = pelangganRepo;
+    }
 
     public void validasiNomorKtp(String nik) {
         if (nik.trim().isEmpty()) {

@@ -6,12 +6,16 @@ import java.util.HashMap;
 import project.pbo.domain.Kendaraan;
 import project.pbo.domain.Transaksi;
 import project.pbo.repository.TransaksiRepository;
-import project.pbo.infrastructure.database.PostgreSqlDatabaseConnection;
+
 
 public class TransaksiService {
-    // Membuat objek repository transaksi secara langsung dan terisolasi dengan koneksi PostgreSQL
-    private final TransaksiRepository transaksiRepo = new TransaksiRepository(new PostgreSqlDatabaseConnection());
-    private final KendaraanService kendaraanService = new KendaraanService();
+    private final TransaksiRepository transaksiRepo;
+    private final KendaraanService kendaraanService;
+
+    public TransaksiService(TransaksiRepository transaksiRepo, KendaraanService kendaraanService) {
+        this.transaksiRepo = transaksiRepo;
+        this.kendaraanService = kendaraanService;
+    }
 
     // Map tarif zona agar mematuhi OCP (terbuka untuk ditambah, tanpa harus mengedit if-else method)
     private static final Map<String, Double> TARIF_ZONA = new HashMap<>();

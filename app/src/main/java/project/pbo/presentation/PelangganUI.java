@@ -5,7 +5,11 @@ import project.pbo.domain.Pelanggan;
 import project.pbo.service.PelangganService;
 
 public class PelangganUI {
-    private final PelangganService pelangganService = new PelangganService();
+    private final PelangganService pelangganService;
+
+    public PelangganUI(PelangganService pelangganService) {
+        this.pelangganService = pelangganService;
+    }
 
     public void daftarPelangganBaru(Scanner input) {
         String nik = "";

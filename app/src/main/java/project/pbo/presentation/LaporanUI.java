@@ -7,7 +7,11 @@ import project.pbo.domain.Transaksi;
 import project.pbo.service.LaporanService;
 
 public class LaporanUI {
-    private final LaporanService laporanService = new LaporanService();
+    private final LaporanService laporanService;
+
+    public LaporanUI(LaporanService laporanService) {
+        this.laporanService = laporanService;
+    }
 
     public void riwayatTransaksi(Scanner input) {
         List<Transaksi> riwayat = laporanService.getRiwayatTransaksi();

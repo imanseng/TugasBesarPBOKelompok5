@@ -6,10 +6,11 @@ import project.pbo.domain.Owner;
 public class OwnerMenu {
     private char pilihanMenu;
     private final Owner owner;
-    private final LaporanUI laporanUI = new LaporanUI();
+    private final LaporanUI laporanUI;
 
-    public OwnerMenu(Owner owner) {
+    public OwnerMenu(Owner owner, LaporanUI laporanUI) {
         this.owner = owner;
+        this.laporanUI = laporanUI;
         this.pilihanMenu = ' ';
     }
 

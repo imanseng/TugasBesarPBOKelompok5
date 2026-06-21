@@ -11,6 +11,17 @@ import project.pbo.presentation.AdminMenu;
 import project.pbo.presentation.StaffMenu;
 import project.pbo.repository.PenggunaRepository;
 import project.pbo.presentation.OwnerMenu;
+import project.pbo.presentation.KendaraanUI;
+import project.pbo.presentation.PelangganUI;
+import project.pbo.presentation.TransaksiUI;
+import project.pbo.presentation.LaporanUI;
+import project.pbo.repository.KendaraanRepository;
+import project.pbo.repository.PelangganRepository;
+import project.pbo.repository.TransaksiRepository;
+import project.pbo.service.KendaraanService;
+import project.pbo.service.PelangganService;
+import project.pbo.service.TransaksiService;
+import project.pbo.service.LaporanService;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,9 +33,27 @@ public class App {
     private static final DatabaseConnection databaseConnection =
         new PostgreSqlDatabaseConnection();
 
-    //Penerapan Dependency Injection: Koneksi DB ke PenggunaRepository dan meneruskannya ke AuthService
+    // Penerapan Dependency Injection: Koneksi DB ke PenggunaRepository dan meneruskannya ke AuthService
     private static final AuthService authService =
         new AuthService(new PenggunaRepository(databaseConnection));
+
+    // INJEKSI DEPENDENSI (DIP) - Composition Root
+    // 1. Repositories
+    private static final KendaraanRepository kendaraanRepo = new KendaraanRepository(databaseConnection);
+    private static final PelangganRepository pelangganRepo = new PelangganRepository(databaseConnection);
+    private static final TransaksiRepository transaksiRepo = new TransaksiRepository(databaseConnection);
+
+    // 2. Services
+    private static final KendaraanService kendaraanService = new KendaraanService(kendaraanRepo);
+    private static final PelangganService pelangganService = new PelangganService(pelangganRepo);
+    private static final TransaksiService transaksiService = new TransaksiService(transaksiRepo, kendaraanService);
+    private static final LaporanService laporanService = new LaporanService(transaksiRepo);
+
+    // 3. UIs
+    private static final KendaraanUI kendaraanUI = new KendaraanUI(kendaraanService);
+    private static final PelangganUI pelangganUI = new PelangganUI(pelangganService);
+    private static final TransaksiUI transaksiUI = new TransaksiUI(transaksiService, kendaraanService, pelangganService);
+    private static final LaporanUI laporanUI = new LaporanUI(laporanService);
 
     public static void main(String[] args) {
 
@@ -90,17 +119,17 @@ public class App {
         switch (role) {
             case "admin":
                 Admin admin = new Admin(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
-                AdminMenu adminMenu = new AdminMenu(admin);
+                AdminMenu adminMenu = new AdminMenu(admin, kendaraanUI);
                 adminMenu.prosesMenu(); 
                 break;
             case "staff":
                 Staff staff = new Staff(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
-                StaffMenu staffMenu = new StaffMenu(staff);
+                StaffMenu staffMenu = new StaffMenu(staff, pelangganUI, kendaraanUI, transaksiUI);
                 staffMenu.prosesMenu();
                 break;
             case "owner":
                 Owner owner = new Owner(pengguna.getUsername(), pengguna.getPassword(), pengguna.getRole());
-                OwnerMenu ownerMenu = new OwnerMenu(owner);
+                OwnerMenu ownerMenu = new OwnerMenu(owner, laporanUI);
                 ownerMenu.prosesMenu();
                 break;
             default:

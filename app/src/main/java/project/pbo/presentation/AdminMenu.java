@@ -6,10 +6,11 @@ import java.util.Scanner;
 public class AdminMenu {
     private char pilihanMenu;
     private final Admin admin;
-    private final KendaraanUI kendaraanUI = new KendaraanUI();
+    private final KendaraanUI kendaraanUI;
 
-    public AdminMenu(Admin admin) {
+    public AdminMenu(Admin admin, KendaraanUI kendaraanUI) {
         this.admin = admin;
+        this.kendaraanUI = kendaraanUI;
         this.pilihanMenu = ' ';
     }
 

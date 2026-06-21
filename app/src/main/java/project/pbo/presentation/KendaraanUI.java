@@ -9,7 +9,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class KendaraanUI {
-    private final KendaraanService kendaraanService = new KendaraanService();
+    private final KendaraanService kendaraanService;
+
+    public KendaraanUI(KendaraanService kendaraanService) {
+        this.kendaraanService = kendaraanService;
+    }
 
     public void tambahKendaraan(Scanner input) {
         int jenis = -1;

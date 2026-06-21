@@ -10,9 +10,15 @@ import project.pbo.service.TransaksiService;
 import java.util.Scanner;
 
 public class TransaksiUI {
-    private final TransaksiService transaksiService = new TransaksiService();
-    private final PelangganService pelangganService = new PelangganService();
-    private final KendaraanService kendaraanService = new KendaraanService();
+    private final TransaksiService transaksiService;
+    private final KendaraanService kendaraanService;
+    private final PelangganService pelangganService;
+
+    public TransaksiUI(TransaksiService transaksiService, KendaraanService kendaraanService, PelangganService pelangganService) {
+        this.transaksiService = transaksiService;
+        this.kendaraanService = kendaraanService;
+        this.pelangganService = pelangganService;
+    }
 
     public void prosesPeminjaman(Scanner input) {
         System.out.println("=== MENU PEMINJAMAN KENDARAAN ===");

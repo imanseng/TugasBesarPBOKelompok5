@@ -7,12 +7,15 @@ public class StaffMenu {
     private char pilihanMenu;
     private final Staff staff;
 
-    private final PelangganUI pelangganUI = new PelangganUI();
-    private final KendaraanUI kendaraanUI = new KendaraanUI();
-    private final TransaksiUI transaksiUI = new TransaksiUI();
+    private final PelangganUI pelangganUI;
+    private final KendaraanUI kendaraanUI;
+    private final TransaksiUI transaksiUI;
 
-    public StaffMenu(Staff staff) {
+    public StaffMenu(Staff staff, PelangganUI pelangganUI, KendaraanUI kendaraanUI, TransaksiUI transaksiUI) {
         this.staff = staff;
+        this.pelangganUI = pelangganUI;
+        this.kendaraanUI = kendaraanUI;
+        this.transaksiUI = transaksiUI;
         this.pilihanMenu = ' ';
     }
 

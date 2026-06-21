@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import project.pbo.domain.Kendaraan;
 import project.pbo.repository.KendaraanRepository;
-import project.pbo.infrastructure.database.PostgreSqlDatabaseConnection;
+
 
 public class KendaraanService {
-    // Membuat objek repository kendaraan secara langsung dan terisolasi dengan koneksi PostgreSQL
-    private final KendaraanRepository kendaraanRepo = new KendaraanRepository(new PostgreSqlDatabaseConnection());
+    private final KendaraanRepository kendaraanRepo;
+
+    public KendaraanService(KendaraanRepository kendaraanRepo) {
+        this.kendaraanRepo = kendaraanRepo;
+    }
 
     public List<Kendaraan> getKendaraanTersedia() {
         List<Kendaraan> listKendaraan = kendaraanRepo.getAll();
