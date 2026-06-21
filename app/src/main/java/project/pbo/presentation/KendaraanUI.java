@@ -128,15 +128,7 @@ public class KendaraanUI {
                 String jenis = k.getJenisKendaraan();
                 String harga = "Rp " + String.format("%,.0f", k.getHargaSewaPerHari());
                 String status = k.getStatus();
-                String infoTambahan = "-";
-
-                if (k instanceof Mobil) {
-                    Mobil mobil = (Mobil) k;
-                    infoTambahan = mobil.getJumlahPintu() + " pintu";
-                } else if (k instanceof Motor) {
-                    Motor motor = (Motor) k;
-                    infoTambahan = motor.getJenisTransmisi();
-                }
+                String infoTambahan = k.getInfoTambahan();
 
                 System.out.printf("| %-10s | %-5s | %-10s | %-13s | %-13s |%n", 
                                     platNomor, jenis, harga, infoTambahan, status);
@@ -223,11 +215,6 @@ public class KendaraanUI {
         System.out.println("Plat Nomor: " + k.getPlatNomor());
         System.out.println("Merk Kendaraan: " + k.getJenisKendaraan());
         System.out.println("Harga Sewa/Hari: Rp " + k.getHargaSewaPerHari());
-        System.out.println("Status: " + k.getStatus());
-        if (k instanceof Mobil) {
-            System.out.println("Jumlah Pintu: " + ((Mobil) k).getJumlahPintu() + " Pintu");
-        } else if (k instanceof Motor) {
-            System.out.println("Jenis Transmisi: " + ((Motor) k).getJenisTransmisi());
-        }
+        System.out.println("Info Tambahan: " + k.getInfoTambahan());
     }
 }

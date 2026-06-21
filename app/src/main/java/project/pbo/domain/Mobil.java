@@ -22,4 +22,9 @@ public class Mobil extends Kendaraan {
         }
         return hariTerlambat * 50000;
     }
+
+    @Override
+    public String getInfoTambahan() {
+        return jumlahPintu + " Pintu";
+    }
 }

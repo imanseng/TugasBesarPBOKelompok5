@@ -1,6 +1,6 @@
 package project.pbo.domain;
 
-public class Kendaraan {
+public abstract class Kendaraan {
     private String platNomor;
     private double hargaSewaPerHari;
     private String jenisKendaraan;
@@ -36,4 +36,6 @@ public class Kendaraan {
     public double hitungDenda(int hariTerlambat) {
         return hariTerlambat * hargaSewaPerHari;
     }
+
+    public abstract String getInfoTambahan();
 }

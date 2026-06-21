@@ -21,4 +21,9 @@ public class Motor extends Kendaraan {
         }
         return hariTerlambat * 20000;
     }
+
+    @Override
+    public String getInfoTambahan() {
+        return jenisTransmisi;
+    }
 }

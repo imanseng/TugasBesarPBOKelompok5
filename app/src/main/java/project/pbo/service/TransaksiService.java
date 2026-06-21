@@ -1,6 +1,8 @@
 package project.pbo.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import project.pbo.domain.Kendaraan;
 import project.pbo.domain.Transaksi;
 import project.pbo.repository.TransaksiRepository;
@@ -10,6 +12,15 @@ public class TransaksiService {
     // Membuat objek repository transaksi secara langsung dan terisolasi dengan koneksi PostgreSQL
     private final TransaksiRepository transaksiRepo = new TransaksiRepository(new PostgreSqlDatabaseConnection());
     private final KendaraanService kendaraanService = new KendaraanService();
+
+    // Map tarif zona agar mematuhi OCP (terbuka untuk ditambah, tanpa harus mengedit if-else method)
+    private static final Map<String, Double> TARIF_ZONA = new HashMap<>();
+
+    static {
+        TARIF_ZONA.put("A", 150000.0);
+        TARIF_ZONA.put("B", 100000.0);
+        TARIF_ZONA.put("C", 50000.0);
+    }
 
     public String generateIdTransaksi() {
         List<Transaksi> listTransaksi = transaksiRepo.findAll();
@@ -57,14 +68,8 @@ public class TransaksiService {
     }
 
     public double hitungBiayaKirimBerdasarkanZona(String zonaKirim) {
-        if ("A".equalsIgnoreCase(zonaKirim)) {
-            return 150000;
-        } else if ("B".equalsIgnoreCase(zonaKirim)) {
-            return 100000;
-        } else if ("C".equalsIgnoreCase(zonaKirim)) {
-            return 50000;
-        }
-        return 0; // Default jika zona tidak valid
+        if (zonaKirim == null) return 0;
+        return TARIF_ZONA.getOrDefault(zonaKirim.toUpperCase(), 0.0);
     }
 
     // Langsung update database menggunakan repository
