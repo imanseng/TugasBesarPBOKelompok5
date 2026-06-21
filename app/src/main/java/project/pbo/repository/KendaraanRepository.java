@@ -46,7 +46,7 @@ public class KendaraanRepository {
                 kendaraanList.add(k);
             }
         } catch (SQLException e) {
-            System.out.println("[ERROR] Gagal membaca data kendaraan: " + e.getMessage());
+            throw new RuntimeException("Gagal membaca data kendaraan", e);
         }
         return kendaraanList;
     }
@@ -76,7 +76,7 @@ public class KendaraanRepository {
             
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("[ERROR] Gagal menyimpan data kendaraan: " + e.getMessage());
+            throw new RuntimeException("Gagal menyimpan data kendaraan", e);
         }
     }
 
@@ -89,7 +89,7 @@ public class KendaraanRepository {
             stmt.setString(2, platNomor);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("[ERROR] Gagal mengubah status kendaraan: " + e.getMessage());
+            throw new RuntimeException("Gagal mengubah status kendaraan", e);
         }
     }
 
@@ -101,7 +101,7 @@ public class KendaraanRepository {
             stmt.setString(1, platNomor);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("[ERROR] Gagal menghapus kendaraan: " + e.getMessage());
+            throw new RuntimeException("Gagal menghapus kendaraan", e);
         }
     }
 }

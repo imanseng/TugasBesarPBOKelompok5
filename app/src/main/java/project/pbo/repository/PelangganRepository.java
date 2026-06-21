@@ -36,7 +36,7 @@ public class PelangganRepository {
                 pelangganList.add(pelanggan);
             }
         } catch (SQLException e) {
-            System.out.println("[ERROR] Gagal membaca data pelanggan: " + e.getMessage());
+            throw new RuntimeException("Gagal membaca data pelanggan", e);
         }
         return pelangganList;
     }
@@ -54,7 +54,7 @@ public class PelangganRepository {
             stmt.executeUpdate();
             
         } catch (SQLException e) {
-            System.out.println("[ERROR] Gagal menyimpan data pelanggan: " + e.getMessage());
+            throw new RuntimeException("Gagal menyimpan data pelanggan", e);
         }
     }
 }
