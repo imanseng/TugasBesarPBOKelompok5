@@ -2,27 +2,26 @@ package project.pbo.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import project.pbo.domain.Kendaraan;
 import project.pbo.repository.KendaraanRepository;
+import project.pbo.infrastructure.database.PostgreSqlDatabaseConnection;
 
 public class KendaraanService {
-    private final KendaraanRepository kendaraanRepo = new KendaraanRepository();
+    // Membuat objek repository kendaraan secara langsung dan terisolasi dengan koneksi PostgreSQL
+    private final KendaraanRepository kendaraanRepo = new KendaraanRepository(new PostgreSqlDatabaseConnection());
 
-    // Pindah fitur filter kendaraan tersedia dari StaffMenu ke sini
     public List<Kendaraan> getKendaraanTersedia() {
         List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
         List<Kendaraan> listKendaraanTersedia = new ArrayList<>();
 
         for (Kendaraan kendaraan : listKendaraan) {
-            if (kendaraan.getStatus().equalsIgnoreCase("Tersedia")) {
+            if (kendaraan.getStatus().equalsIgnoreCase("TERSEDIA")) {
                 listKendaraanTersedia.add(kendaraan);
             }
         }
         return listKendaraanTersedia;
     }
 
-    // Pindah fitur validasi plat nomor duplikat dari AdminMenu ke sini
     public boolean isPlatNomorTerdaftar(String platNomor) {
         List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
         for (Kendaraan k : listKendaraan) {
@@ -33,14 +32,11 @@ public class KendaraanService {
         return false;
     }
 
-    // Pindah fitur simpan kendaraan baru dari AdminMenu ke sini
+    // Kini kita hanya memanggil save, bukan memuat list JSON
     public void tambahKendaraan(Kendaraan kendaraanBaru) {
-        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
-        listKendaraan.add(kendaraanBaru);
-        kendaraanRepo.saveAll(listKendaraan);
+        kendaraanRepo.save(kendaraanBaru);
     }
 
-    // Pindah fitur cari kendaraan by plat nomor dari AdminMenu ke sini
     public Kendaraan cariKendaraanByPlat(String platNomor) {
         List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
         for (Kendaraan k : listKendaraan) {
@@ -51,25 +47,17 @@ public class KendaraanService {
         return null;
     }
 
-    // Pindah fitur hapus kendaraan dari AdminMenu ke sini
+    // Panggil fungsi delete SQL yang dibuat
     public void hapusKendaraan(Kendaraan kendaraan) {
-        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
-        listKendaraan.removeIf(k -> k.getPlatNomor().equalsIgnoreCase(kendaraan.getPlatNomor()));
-        kendaraanRepo.saveAll(listKendaraan);
+        kendaraanRepo.delete(kendaraan.getPlatNomor());
     }
 
     public List<Kendaraan> getAllKendaraan() {
         return kendaraanRepo.loadAll();
     }
 
+    // Panggil perintah UPDATE SQL yang dibuat
     public void updateStatusKendaraan(Kendaraan kendaraan, String statusBaru) {
-        List<Kendaraan> listKendaraan = kendaraanRepo.loadAll();
-        for (Kendaraan k : listKendaraan) {
-            if (k.getPlatNomor().equalsIgnoreCase(kendaraan.getPlatNomor())) {
-                k.setStatus(statusBaru);
-                break;
-            }
-        }
-        kendaraanRepo.saveAll(listKendaraan);
+        kendaraanRepo.updateStatus(kendaraan.getPlatNomor(), statusBaru);
     }
 }
