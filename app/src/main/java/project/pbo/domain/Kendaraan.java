@@ -1,7 +1,5 @@
 package project.pbo.domain;
 
-import java.util.Scanner;
-
 public class Kendaraan {
     private String platNomor;
     private double hargaSewaPerHari;
@@ -38,15 +36,4 @@ public class Kendaraan {
     public double hitungDenda(int hariTerlambat) {
         return hariTerlambat * hargaSewaPerHari;
     }
-
-    public void inputSpesifik(Scanner scanner) {
-    }
-
-    public void tampilkanInfo() {
-        System.out.println("Plat Nomor: " + this.platNomor);
-        System.out.println("Merk Kendaraan: " + this.jenisKendaraan); // Atribut merk/jenis induk
-        System.out.println("Harga Sewa/Hari: Rp " + this.hargaSewaPerHari);
-        System.out.println("Status: " + this.status);
-    }
-
 }

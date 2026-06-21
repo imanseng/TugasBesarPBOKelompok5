@@ -1,16 +1,12 @@
 package project.pbo.presentation;
 
-import java.util.List;
 import java.util.Scanner;
-
 import project.pbo.domain.Owner;
-import project.pbo.domain.Transaksi;
-import project.pbo.service.LaporanService;
 
 public class OwnerMenu {
     private char pilihanMenu;
     private final Owner owner;
-    private final LaporanService laporanService = new LaporanService();
+    private final LaporanUI laporanUI = new LaporanUI();
 
     public OwnerMenu(Owner owner) {
         this.owner = owner;
@@ -36,7 +32,7 @@ public class OwnerMenu {
 
             switch (pilihanMenu) {
                 case '1':
-                    riwayatTransaksi();
+                    laporanUI.riwayatTransaksi(input);
                     break;
                 case '0':
                     System.out.println("Logout berhasil.");
@@ -45,34 +41,5 @@ public class OwnerMenu {
                     System.out.println("Pilihan tidak valid!");
             }
         } while (pilihanMenu != '0');
-
-    }
-
-    public void riwayatTransaksi() {
-        Scanner input = new Scanner(System.in);
-        List<Transaksi> riwayat = laporanService.getRiwayatTransaksi();
-
-        System.out.println("\n=== LAPORAN PENDAPATAN DAN RIWAYAT TRANSAKSI ===");
-
-        if (riwayat.isEmpty()) {
-            System.out.println("Belum ada transaksi.");
-        } else {
-            for (Transaksi transaksi : riwayat) {
-                System.out.println("----------------------------------");
-                System.out.println("ID Transaksi : " + transaksi.getIdTransaksi());
-                System.out.println("NIK          : " + transaksi.getNikPelanggan());
-                System.out.println("Plat Nomor   : " + transaksi.getPlatNomor());
-                System.out.println("Durasi       : " + transaksi.getDurasiHari() + " Hari");
-                System.out.println("Total Bayar  : Rp " + String.format("%,.0f", transaksi.getTotalBayar()));
-                System.out.println("Status       : " + transaksi.getStatus());
-            }
-            System.out.println("----------------------------------");
-        }
-
-        System.out.println("Total Pendapatan dari Transaksi Selesai: Rp "
-                + String.format("%,.0f", laporanService.hitungTotalPendapatan()));
-
-        System.out.println("\nTekan ENTER untuk kembali ke menu utama...");
-        input.nextLine();
     }
 }

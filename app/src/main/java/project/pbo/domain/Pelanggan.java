@@ -22,10 +22,4 @@ public class Pelanggan {
     public String getNoTelp() {
         return noTelp;
     }
-
-    public void tampilkanInfo() {
-        System.out.println("Nama Lengkap\t: " + getNamaPelanggan());
-        System.out.println("Nomor KTP\t: " + getNik());
-        System.out.println("No Telepon\t: " + getNoTelp());
-    }
 }

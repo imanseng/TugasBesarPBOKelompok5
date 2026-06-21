@@ -65,16 +65,4 @@ public class Transaksi {
     public String getZonaKirim() {
         return zonaKirim;
     }
-
-    // Method tampilkan struk peminjaman
-    public void tampilkanStruk(String namaPelanggan, String jenisKendaraan) {
-        System.out.println("\n--- STRUK PEMINJAMAN SEMENTARA ---");
-        System.out.println("ID Transaksi   : " + this.idTransaksi);
-        System.out.println("Nama Pelanggan : " + namaPelanggan);
-        System.out.println("Kendaraan      : " + jenisKendaraan + " (" + this.platNomor + ")");
-        System.out.println("Durasi Sewa    : " + this.durasiHari + " Hari");
-        System.out.println("Estimasi Biaya : Rp " + String.format("%,.0f", this.totalBayar));
-        System.out.println("----------------------------------");
-        System.out.println("[SUKSES] Transaksi berhasil dicatat. Status kendaraan berubah menjadi SEDANG DISEWA.");
-    }
 }

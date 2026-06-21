@@ -50,16 +50,21 @@ public class TransaksiService {
     }
 
     public double hitungBiayaKirim(Transaksi transaksi) {
-        if (transaksi.isDelivery()) {
-            String zonaKirim = transaksi.getZonaKirim();
-            if ("A".equalsIgnoreCase(zonaKirim))
-                return 150000;
-            else if ("B".equalsIgnoreCase(zonaKirim))
-                return 100000;
-            else if ("C".equalsIgnoreCase(zonaKirim))
-                return 50000;
+        if (!transaksi.isDelivery()) {
+            return 0; // Tidak ada biaya tambahan jika diambil di kantor
         }
-        return 0;
+        return hitungBiayaKirimBerdasarkanZona(transaksi.getZonaKirim());
+    }
+
+    public double hitungBiayaKirimBerdasarkanZona(String zonaKirim) {
+        if ("A".equalsIgnoreCase(zonaKirim)) {
+            return 150000;
+        } else if ("B".equalsIgnoreCase(zonaKirim)) {
+            return 100000;
+        } else if ("C".equalsIgnoreCase(zonaKirim)) {
+            return 50000;
+        }
+        return 0; // Default jika zona tidak valid
     }
 
     // Langsung update database menggunakan repository

@@ -9,16 +9,13 @@ public class PelangganService {
     // Membuat objek repository pelanggan secara langsung dan terisolasi dengan koneksi PostgreSQL
     private final PelangganRepository pelangganRepo = new PelangganRepository(new PostgreSqlDatabaseConnection());
 
-    public boolean validasiNomorKtp(String nik) {
+    public void validasiNomorKtp(String nik) {
         if (nik.trim().isEmpty()) {
-            System.out.println("Nomor KTP tidak boleh kosong!");
-            return false;
+            throw new IllegalArgumentException("Nomor KTP tidak boleh kosong!");
         }
         if (!nik.matches("\\d{16}")) {
-            System.out.println("Nomor KTP harus diisi 16 angka!");
-            return false;
+            throw new IllegalArgumentException("Nomor KTP harus diisi 16 angka!");
         }
-        return true;
     }
 
     public boolean validasiDataNomorKTP(String nik) {
