@@ -30,10 +30,6 @@ public class TransaksiService {
         return String.format("TRX-%03d", maxNum + 1);
     }
 
-    public List<Transaksi> getAllTransaksi() {
-        return transaksiRepo.findAll();
-    }
-
     // Pindah fitur buat transaksi peminjaman dari StaffMenu ke sini
     public Transaksi prosesPeminjaman(String nikPelanggan, Kendaraan kendaraan, int durasi, boolean isDelivery,
             String zonaKirim, double biayaKirim) {
