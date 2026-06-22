@@ -112,6 +112,7 @@ public class KendaraanRepository implements ReadableRepository<Kendaraan>, Writa
              
             stmt.setString(1, platNomor);
             stmt.executeUpdate();
+            System.out.println("\n[SUKSES] Kendaraan " + platNomor + " berhasil dihapus dari database.");
         } catch (SQLException e) {
             // Cek apakah errornya karena Foreign Key (violation)
             if (e.getSQLState().equals("23503")) {

@@ -110,7 +110,7 @@ public class KendaraanUI {
 
         if (kendaraanBaru != null) {
             kendaraanService.tambahKendaraan(kendaraanBaru);
-            System.out.println("[SUKSES] Data kendaraan berhasil disimpan ke json. Status default: TERSEDIA.");
+            System.out.println("[SUKSES] Data kendaraan berhasil disimpan ke database. Status default: TERSEDIA.");
         }
     }
 
@@ -188,7 +188,6 @@ public class KendaraanUI {
             }
 
             kendaraanService.hapusKendaraan(kendaraanDitemukan);
-            System.out.println("\n[SUKSES] Kendaraan " + platNomor + " berhasil dihapus dari sistem.");
             System.out.println("\nTekan ENTER untuk kembali ke menu utama...");
             input.nextLine();
             return;

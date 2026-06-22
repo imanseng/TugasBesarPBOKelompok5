@@ -56,7 +56,7 @@ public class PelangganRepository implements ReadableRepository<Pelanggan>, Writa
             stmt.setString(2, baru.getNamaPelanggan());
             stmt.setString(3, baru.getNoTelp());
             stmt.executeUpdate();
-            
+            System.out.println("[SUKSES] Data pelanggan berhasil disimpan ke database.");
         } catch (SQLException e) {
             throw new RuntimeException("Gagal menyimpan data pelanggan", e);
         }

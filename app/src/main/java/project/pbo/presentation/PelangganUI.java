@@ -53,7 +53,6 @@ public class PelangganUI {
         }
 
         pelangganService.tambahPelanggan(nik, namaPelanggan, noTelp);
-        System.out.println("[SUKSES] Data pelanggan berhasil disimpan ke JSON.");
     }
 
     public void cariDataPelanggan(Scanner input) {
