@@ -105,7 +105,7 @@ public class KendaraanRepository implements ReadableRepository<Kendaraan>, Writa
     }
 
     @Override
-    public void delete(String platNomor) {
+        public void delete(String platNomor) {
         String sql = "DELETE FROM kendaraan WHERE plat_nomor = ?";
         try (Connection conn = databaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -113,7 +113,12 @@ public class KendaraanRepository implements ReadableRepository<Kendaraan>, Writa
             stmt.setString(1, platNomor);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Gagal menghapus kendaraan", e);
+            // Cek apakah errornya karena Foreign Key (violation)
+            if (e.getSQLState().equals("23503")) {
+                System.out.println("\n[GAGAL] Kendaraan ini tidak bisa dihapus karena masih memiliki riwayat transaksi/peminjaman.");
+            } else {
+                throw new RuntimeException("Gagal menghapus kendaraan", e);
+            }
         }
     }
 }
